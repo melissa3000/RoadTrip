@@ -13,14 +13,14 @@ class User(db.Model):
 
     user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True)
-    password = db.Column(db.String(20), unique=True)
+    password = db.Column(db.String(20))
 
 
 
     def __repr__(self):
         """Provides more helpful output when printed"""
 
-        return "<User user_id: %s username: %s" % (self.user_id, self.username)
+        return "<User user_id: %s username: %s>" % (self.user_id, self.username)
 
 
 

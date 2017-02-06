@@ -6,6 +6,7 @@ from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, User
+import psycopg2
 
 
 app = Flask(__name__)
@@ -21,10 +22,6 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Homepage allows users to log in"""
 
-# ToDo: create my own user that I can control and a random test user for others to
-# explore/play with app (create db with two user_id's)
-
-
     return render_template("homepage.html")
 
 
@@ -32,12 +29,51 @@ def index():
 def user_login():
     """Logs user into system"""
 
+    username = request.form.get("name")
+    password = request.form.get("password")
+    # print "username: ", username      # this works
+    # print "password: ", password      #  this works
 
-    pass
+    user = User.query.filter_by(username=username).first()
+    # print "User query result: ", user     # this works,  <User user_id: 1 username: admin>  // User query result:  None
+
+    if not user:
+        flash("User name not found. Please try again")
+        return redirect("/")
+
+    if user.password != password:
+        flash("Your password was incorrect. Please try again")
+        return redirect("/")
+
+    else:
+        session["user_id"] = user.user_id
+
+        flash("You are logged in")
+        return render_template("search_form.html")
+
+    
 
 
-# will need to deliver log in information, create session if user found
-# and return successful log in flash message
+
+
+
+
+#Add route to create new user:
+# @app.route('/register', methods=['POST'])
+# def new_user():
+#     """Allows new user to register and adds them to database"""
+
+#     user = request.form["name"]
+#     password = request.form["password"]
+
+#     new_user = User(username=user, password=password)
+
+#     db.session.add(new_user)
+#     db.session.commit()
+
+#     flash("Thank you for registering as a user")
+#     return (where does this go and add them to a current session/log them in)
+
 
 
 
@@ -46,7 +82,6 @@ if __name__ == "__main__":
 
     #Turn this off after debugging
     app.debug = True
-    
     connect_to_db(app)
 
     DebugToolbarExtension(app)

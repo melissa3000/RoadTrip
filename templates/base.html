@@ -10,8 +10,20 @@
 
 </head>
 <body>
-  <h1>What text do I want here?</h1>
+  <h1>Road Trip Planner</h1>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+   {% endif %}
+  {% endwith %}
+
   {% block content %}BODY CONTENT GOES HERE{% endblock %}
-  <footer>Do I want a footer?</footer>
+  
+ <!--  <footer>Do I want a footer?</footer> -->
 </body>
 </html>

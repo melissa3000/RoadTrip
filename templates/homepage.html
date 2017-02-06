@@ -1,10 +1,13 @@
 
 {% extends 'base.html' %}
 
-{% block title %}Log in page - This needs a better name :){% endblock %}
+{% block title %}Log in{% endblock %}
 
 {% block content %}
-  <form>
+
+  <h2>Please log in</h2>
+
+  <form action="/login" method="POST">
     <label for="user_name">Name:</label>
     <input id="user_name" type="text" name="name"><br>
 
@@ -16,13 +19,6 @@
   </form>
 
 
-<!-- When adding checkboxes in phase2, make sure they're accessible:
-http://webaim.org/techniques/forms/controls -->
-
 {% endblock %}
 
 
-
-
-<!-- next route (information flow) sends user info to POST and check against user db
-create session and flash successful log in message
