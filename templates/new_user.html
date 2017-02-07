@@ -5,23 +5,18 @@
 
 {% block content %}
 
-  <h2>Please log in</h2>
 
-  <form action="/login" method="POST">
+
+  <h2>Register below</h2> 
+
+  <form action="/register" method="POST">
     <label for="user_name">Name:</label>
     <input id="user_name" type="text" name="name"><br>
 
     <label for="password">Password:</label>
     <input id="password" type="text" name="password"><br>
 
-    <input type="submit" name="submit" value="submit">
-
+    <input type="submit" name="register" value="register">
   </form>
 
-  <br>
-<a href="/new_user">New User? Click to register</a>
-
-
 {% endblock %}
-
-

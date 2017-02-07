@@ -5,11 +5,12 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, User
-import psycopg2
+from model import connect_to_db, User, db
+
 
 
 app = Flask(__name__)
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 # should this be kept in the secrets.sh file?
 app.secret_key = "jaofep98urOSAKFDa89"
@@ -52,27 +53,29 @@ def user_login():
         return render_template("search_form.html")
 
     
+@app.route('/new_user')
+def register_form():
+
+    return render_template("new_user.html")
 
 
 
+@app.route('/register', methods=['POST'])
+def new_user():
+    """Allows new user to register and adds them to database"""
+
+    username = request.form.get("name")
+    password = request.form.get("password")
 
 
+    new_user = User(username=username, password=password)
 
-#Add route to create new user:
-# @app.route('/register', methods=['POST'])
-# def new_user():
-#     """Allows new user to register and adds them to database"""
+    db.session.add(new_user)
+    db.session.commit()
 
-#     user = request.form["name"]
-#     password = request.form["password"]
-
-#     new_user = User(username=user, password=password)
-
-#     db.session.add(new_user)
-#     db.session.commit()
-
-#     flash("Thank you for registering as a user")
-#     return (where does this go and add them to a current session/log them in)
+    flash("Thank you for registering as a user")
+    #code 307 preserves the original form method through the redirect
+    return redirect("/login", code=307)
 
 
 
