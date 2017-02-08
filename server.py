@@ -1,12 +1,11 @@
 """Road Trip app"""
 
 from jinja2 import StrictUndefined
-
 from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, User, db
-
+import os
 
 
 app = Flask(__name__)
@@ -18,6 +17,7 @@ app.secret_key = "jaofep98urOSAKFDa89"
 #Included to make Jinja variables easier to debug:
 app.jinja_env.undefined = StrictUndefined
 
+#----------------------------------------------------------------------------
 
 @app.route('/', methods=['GET'])
 def index():
@@ -53,7 +53,7 @@ def user_login():
         return render_template("search_form.html")
 
     
-@app.route('/new_user')
+@app.route('/new-user')
 def register_form():
 
     return render_template("new_user.html")
@@ -77,6 +77,11 @@ def new_user():
     #code 307 preserves the original form method through the redirect
     return redirect("/login", code=307)
 
+@app.route('/map')
+def Places_API_request():
+    """Makes API request from Google Places API"""
+
+    return render_template("map.html", key=os.environ['PLACES_SECRET_KEY'])
 
 
 
@@ -86,7 +91,6 @@ if __name__ == "__main__":
     #Turn this off after debugging
     app.debug = True
     connect_to_db(app)
-
     DebugToolbarExtension(app)
 
     app.run(debug=True, host="0.0.0.0")
