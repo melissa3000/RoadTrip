@@ -18,10 +18,23 @@ function initMap() {
   // creates map with hard coded center point with marker at Oakland
   var oakland = {lat: 37.8044, lng: -122.2711};
 
-  var map = new google.maps.Map(document.getElementById('map'), {
+  //Creates path overlay on map from start to end location
+  var directionsService = new google.maps.DirectionsService();
+  var directionsDisplay = new google.maps.DirectionsRenderer();
+
+  var mapOptions = {
     zoom: 8,
     center: oakland
-  });
+  };
+
+  var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  directionsDisplay.setMap(map);
+  directionsDisplay.setPanel(document.getElementById('directionsPanel'));
+
+  // var map = new google.maps.Map(document.getElementById('map'), {
+  //   zoom: 8,
+  //   center: oakland
+  // });
 
   //allows places search with hard coded variables built into request //later use .value to set each element from the DOM
   var request = {
@@ -91,6 +104,34 @@ function initMap() {
       infowindow.open(map, marker);
     });
   });
+  }
+
+  // var directionsDisplay;
+  // var directionsService = new google.maps.DirectionsService();
+  // var stinsonBeach = new google.maps.LatLng(37.9005, -122.6444);
+  // var petaluma = new google.maps.LatLng(38.2324, -122.6367);
+
+  // function Directions() {
+  //   directionsDisplay = new google.maps.DirectionsRenderer();
+  //   directionsDisplay.setMap(map);
+
+  // }
+
+  function calcRoute() {
+    // var start = document.getElementById('start').value;
+    // var end = document.getElementById('end').value;
+    
+    var request = {
+      origin: stinsonBeach, // start
+      desintation: petaluma, // end
+      travelMode: 'DRIVING'
+    };
+    //works like a get request, sending request to directionsService and running a success function on the result
+    directionsService.route(request, function(result, status) {
+      if (status == 'OK') {
+        directionsRenderer.setDirections(result);
+      }
+    });
   }
 }
 
