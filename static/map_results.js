@@ -1,46 +1,98 @@
 "use strict";
 
-var map;
-var boxpolys = null;
-var directions;
-var routeBoxer = null;
-var distance;
-var service;
-var googleMarkers = [];
 
 
-// console.log("I got to the js page");
 
 function initMap() {
+
+  // var map;
+  var boxpolys = null;
+  var directions;
+  // var routeBoxer = null;
+  var distance;
+  var googleMarkers = [];
+  // var request;
+  // var service;
+  // var infowindow; 
+
+  // creates map with hard coded center point with marker at Oakland
   var oakland = {lat: 37.8044, lng: -122.2711};
+
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 8,
     center: oakland
   });
 
-  var windowContent = 'infowindow content goes here'; // double check google documentaion on this syntax when it becomes complicated
+  //allows places search with hard coded variables built into request //later use .value to set each element from the DOM
+  var request = {
+    location: oakland,
+    radius: 500,
+    types: ['restaurant']
+  };
 
-  var infowindow = new google.maps.InfoWindow({
-    content: windowContent
-  });
 
+  //radar search allows a search for places within a search radius by keyword or type, will return up to 200 objects
+  var service = new google.maps.places.PlacesService(map);
+  service.radarSearch(request, callback);
+
+  //creates new routebox object using Route Boxer library
+  var routeBoxer = new RouteBoxer();
+
+  //creates window on marker click that displays custom text (see below, kept in case it's useful in incorporating yelp)
+  // var windowContent = 'infowindow content goes here'; // double check google documentaion on this syntax when it becomes complicated
+
+  // var infowindow = new google.maps.InfoWindow({
+  //   content: windowContent
+  // });
+
+  var infowindow = new google.maps.InfoWindow();
+
+  //creates map marker at Oakland - location currently hard coded in
   var marker = new google.maps.Marker({
     position: oakland,
     map: map,
     title: 'Oakland, CA'
   });
 
-  marker.addListener('click', function() {
-    infowindow.open(map, marker);
+  //when marker clicked, show info window 
+  // marker.addListener('click', function() {
+  //   infowindow.open(map, marker);
+  // });
+    
+
+
+
+
+  function callback(results, status) {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      for (var i = 0; i < results.length; i++) {
+        var place = results[i];
+      createMarker(results[i]);
+      }
+    }
+    else
+      console.log('error: '+ status);
+  }
+
+  function createMarker(place) {
+    var placeLoc = place.geometry.location;
+    var marker = new google.maps.Marker({
+      map: map,
+      position: place.geometry.location
+    });
+
+    google.maps.event.addListener(marker, 'click', function() {
+      service.getDetails(place, function(result, status) {
+        if (status !== google.maps.places.PlacesServiceStatus.OK) {
+          console.error(status);
+          return;
+        }
+      infowindow.setContent(result.name);
+      infowindow.open(map, marker);
+    });
   });
+  }
 }
-
-initMap();
-
-// get map element by id, set to var map, param mapoptions (function above)
-// set variable service using pacesService on the map from google places
-
-// routeBoxer = new routeBoxer();
 
 // set var for directionService from maps (directions??)
 // set var for directsions Renderer from directionService
@@ -91,6 +143,8 @@ initMap();
 // set variable for marker and set map, icon, position
 // later add event listener to give yelp results, now use googel for popups/ getDetails - check google docs
 // otherwise, double check reference code for more info
+
+initMap();
 
 
 
