@@ -5,58 +5,46 @@
 
 function initMap() {
 
-  // var map;
   var boxpolys = null;
   var directions;
-  // var routeBoxer = null;
   var distance;
   var googleMarkers = [];
-  // var request;
-  // var service;
-  // var infowindow; 
 
   // creates map with hard coded center point with marker at Oakland
   var oakland = {lat: 37.8044, lng: -122.2711};
-
-  //Creates path overlay on map from start to end location
-  var directionsService = new google.maps.DirectionsService();
-  var directionsDisplay = new google.maps.DirectionsRenderer();
-
+  
+  //centers map template at oakland
   var mapOptions = {
     zoom: 8,
     center: oakland
   };
 
   var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-  directionsDisplay.setMap(map);
-  directionsDisplay.setPanel(document.getElementById('directionsPanel'));
-
-  // var map = new google.maps.Map(document.getElementById('map'), {
-  //   zoom: 8,
-  //   center: oakland
-  // });
-
-  //allows places search with hard coded variables built into request //later use .value to set each element from the DOM
-  var request = {
-    location: oakland,
-    radius: 500,
-    types: ['restaurant']
-  };
+  
+  
 
 
-  //radar search allows a search for places within a search radius by keyword or type, will return up to 200 objects
-  var service = new google.maps.places.PlacesService(map);
-  service.radarSearch(request, callback);
+ //------------------Search by Radius------------------------------------------ 
 
-  //creates new routebox object using Route Boxer library
-  var routeBoxer = new RouteBoxer();
+  // //allows places search with hard coded variables built into request //later use .value to set each element from the DOM
+  // var request = {
+  //   location: oakland,
+  //   radius: 500,
+  //   types: ['restaurant']
+  // };
 
-  //creates window on marker click that displays custom text (see below, kept in case it's useful in incorporating yelp)
-  // var windowContent = 'infowindow content goes here'; // double check google documentaion on this syntax when it becomes complicated
+  // //radar search allows a search for places within a search radius by keyword or type, will return up to 200 objects
+  // var service = new google.maps.places.PlacesService(map);
+  // service.radarSearch(request, callback);
 
-  // var infowindow = new google.maps.InfoWindow({
-  //   content: windowContent
-  // });
+
+
+
+
+  //---------------------Create InfoWindows----------------------------------
+
+  
+
 
   var infowindow = new google.maps.InfoWindow();
 
@@ -67,6 +55,15 @@ function initMap() {
     title: 'Oakland, CA'
   });
 
+
+  //creates window on marker click that displays custom text  (useful later when incorporating yelp)
+  // var windowContent = 'infowindow content goes here'; // double check google documentaion on this syntax when it becomes complicated
+
+  // var infowindow = new google.maps.InfoWindow({
+  //   content: windowContent
+  // });
+
+
   //when marker clicked, show info window 
   // marker.addListener('click', function() {
   //   infowindow.open(map, marker);
@@ -74,72 +71,83 @@ function initMap() {
     
 
 
+  //------------------Create Markers based on Places Search----------------
 
-
-  function callback(results, status) {
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
-      for (var i = 0; i < results.length; i++) {
-        var place = results[i];
-      createMarker(results[i]);
-      }
-    }
-    else
-      console.log('error: '+ status);
-  }
-
-  function createMarker(place) {
-    var placeLoc = place.geometry.location;
-    var marker = new google.maps.Marker({
-      map: map,
-      position: place.geometry.location
-    });
-
-    google.maps.event.addListener(marker, 'click', function() {
-      service.getDetails(place, function(result, status) {
-        if (status !== google.maps.places.PlacesServiceStatus.OK) {
-          console.error(status);
-          return;
-        }
-      infowindow.setContent(result.name);
-      infowindow.open(map, marker);
-    });
-  });
-  }
-
-  // var directionsDisplay;
-  // var directionsService = new google.maps.DirectionsService();
-  // var stinsonBeach = new google.maps.LatLng(37.9005, -122.6444);
-  // var petaluma = new google.maps.LatLng(38.2324, -122.6367);
-
-  // function Directions() {
-  //   directionsDisplay = new google.maps.DirectionsRenderer();
-  //   directionsDisplay.setMap(map);
-
+  // function callback(results, status) {
+  //   if (status === google.maps.places.PlacesServiceStatus.OK) {
+  //     for (var i = 0; i < results.length; i++) {
+  //       var place = results[i];
+  //     createMarker(results[i]);
+  //     }
+  //   }
+  //   else
+  //     console.log('error: '+ status);
   // }
 
-  function calcRoute() {
-    // var start = document.getElementById('start').value;
-    // var end = document.getElementById('end').value;
-    
+  // function createMarker(place) {
+  //   var placeLoc = place.geometry.location;
+  //   var marker = new google.maps.Marker({
+  //     map: map,
+  //     position: place.geometry.location
+  //   });
+
+  //   google.maps.event.addListener(marker, 'click', function() {
+  //     service.getDetails(place, function(result, status) {
+  //       if (status !== google.maps.places.PlacesServiceStatus.OK) {
+  //         console.error(status);
+  //         return;
+  //       }
+  //     infowindow.setContent(result.name);
+  //     infowindow.open(map, marker);
+  //   });
+  // });
+  // }
+
+
+//------------------display directions----------------------------------
+
+  //Creates path overlay on map from start to end location, hard coded for stinson beach to petaluma
+  function displayDirections() {
+
+    var stinsonBeach = {lat:37.9005, lng: -122.6444};
+    var petaluma = {lat: 38.2324, lng: -122.6367};
+
     var request = {
       origin: stinsonBeach, // start
       desintation: petaluma, // end
       travelMode: 'DRIVING'
     };
-    //works like a get request, sending request to directionsService and running a success function on the result
-    directionsService.route(request, function(result, status) {
-      if (status == 'OK') {
-        directionsRenderer.setDirections(result);
+
+    var directionsService = new google.maps.DirectionsService;
+    directionsService.route(request, function(response, status) {
+      if (status === google.maps.DirectionsStatus.OK) {
+        directionsDisplay.setDirections(response);
+      } else {
+        window.alert('Directions request failed due to ' + status);
       }
     });
+
+    var directionsDisplay = new google.maps.DirectionsRenderer;
+    directionsDisplay.setMap(map);
   }
+
+  // displayDirections();
+
+
+  //incorporate later when start and end are taken from DOM
+  // var start = document.getElementById('start').value;
+  // var end = document.getElementById('end').value;
+//-------------------------------------------------------------------------
+
+
 }
 
 // set var for directionService from maps (directions??)
 // set var for directsions Renderer from directionService
 
 
-
+  //creates new routebox object using Route Boxer library
+  // var routeBoxer = new RouteBoxer();
 
 // write function to calculate route
 
