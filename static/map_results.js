@@ -178,13 +178,10 @@
 
 
 
-//   //------------Creating polyboxes to use for RouteBox library-------------------
 
 
 
-
-
-// ----------------------------------------------------------------------------
+// --------------Full function to return search results along path------------------------
 
 
 
@@ -293,14 +290,11 @@ function initialize() {
   }
 
 
+  //create markers on each returned place result
   function createMarker(place) {
     var placeLoc = place.geometry.location;
-    if (place.icon) {
-      var image = new google.maps.MarkerImage(
-        place.icon, new google.maps.Size(71, 71),
-        new google.maps.Point(0, 0), new google.maps.Point(17, 34),
-        new google.maps.Size(25, 25));
-    } else var image = {
+
+    var image = {
       url: "https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle.png",
       size: new google.maps.Size(7, 7),
       anchor: new google.maps.Point(3.5, 3.5)
@@ -311,9 +305,6 @@ function initialize() {
       icon: image,
       position: place.geometry.location
     });
-    var request = {
-      reference: place.reference
-    };
 
     var infowindow = new google.maps.InfoWindow();
 
@@ -334,84 +325,8 @@ initialize();
 
 
 
+//--------------------------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-//   // Creates boxes around the overview path of the first route returned from the search
-
-//   //find places within each box iterating through the search index for the length of the box array
-//   function findPlaces(boxes, searchIndex) {
-//     var request = {
-//       bounds: boxes[searchIndex],
-//       types: ['restaurant']
-//     };
-
-
-//     var service = new google.maps.places.PlacesService(map);
-//     service.radarSearch(request, function (results, status) {
-//     if (status === google.maps.places.PlacesServiceStatus.OK) {
-//       for (var i = 0; i < results.length; i++) {
-//         var place = results[i];
-//         var marker = createMarker(place);
-//       }
-//       searchIndex++;
-//       if (searchIndex < boxes.length)
-//       findPlaces(boxes,searchIndex);
-//     }
-//     else
-//       console.log('error: '+ status);
-//   });
-
-
-
-//   function createMarker(place) {
-//     var placeLoc = place.geometry.location;
-//     var marker = new google.maps.Marker({
-//       map: map,
-//       position: place.geometry.location
-//     });
-
-//     google.maps.event.addListener(marker, 'click', function() {
-//       service.getDetails(place, function(result, status) {
-//         if (status !== google.maps.places.PlacesServiceStatus.OK) {
-//           console.error(status);
-//           return;
-//         }
-//       infowindow.setContent(result.name);
-//       infowindow.open(map, marker);
-//     });
-//   });
-//   }
-//   }
-
-
-
-// initMap();
-
-
-
-
-
-
-// do I need to covert distance to km from miles for routeBoxer?
-
-
-
-// write function to draw the array of boxes as polylines on the map
-// make a new Array of boxes.length
-// iterate over boxpolys one at a time,
-// for each boxpolys -- new google.maps.Rectangle ({set bounds, fill opacity, stroke opacity, stroke color, stroke wieght, map})
-
-
-// write function to findPlaces(searchIndex)
-// set variables for type, keyword, name from the DOM value -- hard code just one of these for MVP, read more later
 
 
 
