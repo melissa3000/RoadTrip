@@ -355,6 +355,7 @@ function initialize() {
         //since direction request was successful,
         //call findPlaces function with searchIndex zero
         findPlaces(0);
+        findParks(0);
       } else {
         alert("Directions query failed: " + status);
       }
@@ -387,14 +388,21 @@ function initialize() {
       type: 'restaurant'
     };
 
+
     //radarSearch allows a 'type' search within a given radius,
     // if search is successful, create a marker for each result.
     // If not, set Timeout to allow a delay and search again due to query limits
     service.nearbySearch(radarRequest, function(results, status) {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
         // for (var i = 0; i < length.results; i++) {
+
+        // debugger;
+
         for (var i = 0, result; result = results[i]; i++) {
-          var marker = createMarker(result);
+          if (result.rating >= 4.0){
+            // debugger;
+            var marker = createMarker(result);
+          }
         }
       }
       //as long as we haven't triggered the query limit, add 1 to the index and search again
@@ -407,8 +415,43 @@ function initialize() {
       }
 
     });
+
   }
 
+function findParks(searchIndex) {
+
+    // search request is defined as the area bound by each routeBox box,
+    // search type is hard coded as restaurant for testing
+
+
+    var parkRequest = {
+      bounds: boxes[searchIndex],
+      type: 'park'
+    };
+
+
+    //separate search for second parameter (parks only)
+     service.nearbySearch(parkRequest, function(results, status) {
+      if (status == google.maps.places.PlacesServiceStatus.OK) {
+
+        for (var i = 0, result; result = results[i]; i++) {
+          if (result.rating >= 4.0) {
+            // debugger;
+            var marker = createMarker(result);
+          }
+        }
+      }
+      //as long as we haven't triggered the query limit, add 1 to the index and search again
+      if (status != google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
+        searchIndex++;
+        if (searchIndex < (boxes.length-2))
+          findParks(searchIndex);
+      } else { // delay 1 second and try again
+        setTimeout("findParks(" + searchIndex + ")", 1000);
+      }
+
+    });
+  }
 
   //create markers on each returned place result
   function createMarker(place) {
