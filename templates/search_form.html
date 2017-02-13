@@ -5,13 +5,16 @@
 {% block content %}
 
   <h2>Search for your next road trip</h2>
-  
-  <form action="/results" method="POST">
+
+  <form action="/map" method="POST">
     <label for="start">Starting Location:</label>
     <input id="start" type="text" name="start"><br>
 
+    <label for="end">Ending Location:</label>
+    <input id="end" type="text" name="end"><br>
+<!--
     <label for="time">Max Desired Drive Time (in minutes):</label>
-    <input id="time" type="text" name="time"><br>
+    <input id="time" type="text" name="time"><br> -->
 
     <input type="submit" name="submit" value="submit">
 

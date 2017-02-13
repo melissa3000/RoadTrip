@@ -299,7 +299,6 @@
 //Search updated to Nearby and boxes closest to origin not included in search
 //--------------------------------------------------------------------------
 
-
 function initialize() {
   // intial map hard coded to center at Oakland
   var oakland = {lat: 37.8044, lng: -122.2711};
@@ -330,12 +329,33 @@ function initialize() {
 
     var distance = 5.0; // sets search box size to 5km from route path
 
+    // hard coded parameters used for testing / troubleshooting / this works as written
+    //search parameters for draw path request: start point, end point, travel method
+    // var pathRequest = {
+    //   origin: {lat: 37.8044, lng: -122.2711}, // hard coded to oakland for testing
+    //   destination: {lat: 38.2324, lng: -122.6367}, // hard coded to petaluma for testing
+    //   // destination: {lat: 38.5816, lng: -121.4944}, // hard coded to sacramento for testing
+    //   travelMode: google.maps.DirectionsTravelMode.DRIVING
+    // };
+
+
+    // why don't these work?
+    // var start = "{{ start }}";
+    // var end = "{{ end }}";
+    // var start = $('#start').val();
+    // var end = $('#end').val();
+
     //search parameters for draw path request: start point, end point, travel method
     var pathRequest = {
-      origin: {lat: 37.8044, lng: -122.2711}, // hard coded to oakland for testing
-      destination: {lat: 38.2324, lng: -122.6367}, // hard coded to petaluma for testing
+      // origin: document.getElementById('start').value,
+      origin: start,
+      // origin: 'sacramento',
+      // destination: document.getElementById('end').value,
+      destination: end,
+      // destination: 'oakland',
       travelMode: google.maps.DirectionsTravelMode.DRIVING
     };
+
 
     // Make the directions request, if the status is ok, create a path and
     // routeBox search boxes along the path
@@ -354,8 +374,9 @@ function initialize() {
 
         //since direction request was successful,
         //call findPlaces function with searchIndex zero
-        findPlaces(0);
+
         findParks(0);
+        findPlaces(0);
       } else {
         alert("Directions query failed: " + status);
       }
@@ -383,7 +404,7 @@ function initialize() {
 
     // search request is defined as the area bound by each routeBox box,
     // search type is hard coded as restaurant for testing
-    var radarRequest = {
+    var restaurantRequest = {
       bounds: boxes[searchIndex],
       type: 'restaurant'
     };
@@ -392,15 +413,11 @@ function initialize() {
     //radarSearch allows a 'type' search within a given radius,
     // if search is successful, create a marker for each result.
     // If not, set Timeout to allow a delay and search again due to query limits
-    service.nearbySearch(radarRequest, function(results, status) {
+    service.nearbySearch(restaurantRequest, function(results, status) {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
-        // for (var i = 0; i < length.results; i++) {
-
-        // debugger;
 
         for (var i = 0, result; result = results[i]; i++) {
           if (result.rating >= 4.0){
-            // debugger;
             var marker = createMarker(result);
           }
         }
@@ -421,8 +438,7 @@ function initialize() {
 function findParks(searchIndex) {
 
     // search request is defined as the area bound by each routeBox box,
-    // search type is hard coded as restaurant for testing
-
+    // search type is hard coded as park for testing
 
     var parkRequest = {
       bounds: boxes[searchIndex],
@@ -430,7 +446,7 @@ function findParks(searchIndex) {
     };
 
 
-    //separate search for second parameter (parks only)
+    //separate search for second parameter (parks only), returns parks with 4.0 rating or higher
      service.nearbySearch(parkRequest, function(results, status) {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
 
@@ -483,6 +499,7 @@ function findParks(searchIndex) {
     });
 
   }
+
 }
 initialize();
 

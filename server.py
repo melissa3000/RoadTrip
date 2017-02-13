@@ -11,7 +11,6 @@ import os
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
-# should this be kept in the secrets.sh file?
 app.secret_key = "jaofep98urOSAKFDa89"
 
 #Included to make Jinja variables easier to debug:
@@ -52,7 +51,7 @@ def user_login():
         flash("You are logged in")
         return render_template("search_form.html")
 
-    
+
 @app.route('/new-user')
 def register_form():
 
@@ -77,11 +76,28 @@ def new_user():
     #code 307 preserves the original form method through the redirect
     return redirect("/login", code=307)
 
-@app.route('/map')
-def Places_API_request():
-    """Makes API request from Google Places API"""
 
-    return render_template("map.html", key=os.environ['PLACES_SECRET_KEY'])
+@app.route('/map', methods=['POST'])
+def new_search():
+    """Takes user's start and end location and returns road trip results"""
+
+    start = request.form.get("start")
+    end = request.form.get("end")
+
+    # print "start!!", start
+    # print "end!!", end
+
+    return render_template("map.html", start=start,
+                                    end=end,
+                                    key=os.environ['PLACES_SECRET_KEY'])
+
+
+# @app.route('/map')
+# def Places_API_request():
+#     """Makes API request from Google Places API"""
+
+#     return render_template("map.html", key=os.environ['PLACES_SECRET_KEY'])
+
 
 
 
