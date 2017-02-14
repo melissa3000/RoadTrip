@@ -428,7 +428,7 @@ function initialize() {
         if (searchIndex < (boxes.length-2))
           findPlaces(searchIndex);
       } else { // delay 1 second and try again
-        setTimeout("findPlaces(" + searchIndex + ")", 1000);
+        setTimeout(findPlaces(searchIndex), 1000);
       }
 
     });
@@ -463,7 +463,7 @@ function findParks(searchIndex) {
         if (searchIndex < (boxes.length-2))
           findParks(searchIndex);
       } else { // delay 1 second and try again
-        setTimeout("findParks(" + searchIndex + ")", 1000);
+        setTimeout(findParks(searchIndex), 1000);
       }
 
     });
