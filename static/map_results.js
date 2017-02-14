@@ -387,7 +387,13 @@ function initialize() {
         //since direction request was successful,
         //call findPlaces function with searchIndex zero
 
-        // findParks(0);
+        //allows selection of search boxes to adjust based on origin/destation direction
+        if (startLat > endLat) {
+          findParks(0);
+        } else if (endLat > startLat) {
+          findParks(2);
+        }
+
         if (startLat > endLat) {
           findPlaces(0);
         } else if (endLat > startLat) {
@@ -496,8 +502,21 @@ function initialize() {
       //as long as we haven't triggered the query limit, add 1 to the index and search again
       if (status != google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
         searchIndex++;
-        if (searchIndex < (boxes.length-2))
-          findParks(searchIndex);
+
+        if (startLat > endLat) {
+
+          if (searchIndex < (boxes.length-2)) {
+            findParks(searchIndex);
+          }
+        }
+
+        else if (endLat > startLat) {
+
+          if (searchIndex < boxes.length) {
+            findParks(searchIndex);
+          }
+        }
+
       } else { // delay 1 second and try again
         setTimeout("findParks(" + searchIndex + ")", 1000);
       }
