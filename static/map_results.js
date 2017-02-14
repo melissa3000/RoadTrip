@@ -326,10 +326,12 @@ function initialize() {
   var boxes;
   var endLat;
   var startLat;
+  var driveDistance; // in meters
+  var driveDuration; // drive time in seconds
 
   function drawPath() {
 
-    var distance = 5.0; // sets search box size to 5km from route path
+
 
     // hard coded parameters used for testing / troubleshooting / this works as written
     //search parameters for draw path request: start point, end point, travel method
@@ -367,13 +369,25 @@ function initialize() {
       if (status == google.maps.DirectionsStatus.OK) {
         directionsRenderer.setDirections(result);
 
+        //required to adjust box iteration later (independent of direction of travel)
         endLat = result.routes[0].legs[0].end_location.lng();
         startLat = result.routes[0].legs[0].start_location.lng();
 
+        // required to capture route distance and drive time for additional calculations
+        driveDistance = result.routes[0].legs[0].distance.value;
+        driveDuration = result.routes[0].legs[0].duration.value;
 
+        // console.log("Distance in meters: ", distance);
+        // console.log("Drive time in seconds: ", duration);
 
         // console.log("End Lat: ", endLat);
         // console.log("Start Lat: ", startLat);
+        var distance;
+        if (driveDuration < 5400) {
+          distance = 5.0; // sets search box size to 5km from route path
+        } else if (driveDuration > 5401) {
+          distance = 10.0;
+        }
 
         //path_overview smooths out the path coordinates
         var path = result.routes[0].overview_path;
