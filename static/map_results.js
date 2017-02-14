@@ -324,6 +324,8 @@ function initialize() {
   drawPath();
 
   var boxes;
+  var endLat;
+  var startLat;
 
   function drawPath() {
 
@@ -357,11 +359,21 @@ function initialize() {
     };
 
 
+
+
     // Make the directions request, if the status is ok, create a path and
     // routeBox search boxes along the path
     directionService.route(pathRequest, function(result, status) {
       if (status == google.maps.DirectionsStatus.OK) {
         directionsRenderer.setDirections(result);
+
+        endLat = result.routes[0].legs[0].end_location.lng();
+        startLat = result.routes[0].legs[0].start_location.lng();
+
+
+
+        // console.log("End Lat: ", endLat);
+        // console.log("Start Lat: ", startLat);
 
         //path_overview smooths out the path coordinates
         var path = result.routes[0].overview_path;
@@ -370,13 +382,19 @@ function initialize() {
 
         //turn on drawBoxes for testing if you want to visualize search boundaries,
         //function is commented out below
-        // drawBoxes();
+        drawBoxes();
 
         //since direction request was successful,
         //call findPlaces function with searchIndex zero
 
-        findParks(0);
-        findPlaces(0);
+        // findParks(0);
+        if (startLat > endLat) {
+          findPlaces(0);
+        } else if (endLat > startLat) {
+          findPlaces(2);
+        }
+
+        // findAmusementParks(0);
       } else {
         alert("Directions query failed: " + status);
       }
@@ -384,20 +402,22 @@ function initialize() {
 
   }
 
+
+
   // Draw the array of boxes as polylines on the map - helpful to visualize search while testing
-  // function drawBoxes() {
-  //   var boxpolys = new Array(boxes.length);
-  //   for (var i = 0; i < boxes.length; i++) {
-  //     boxpolys[i] = new google.maps.Rectangle({
-  //       bounds: boxes[i],
-  //       fillOpacity: 0,
-  //       strokeOpacity: 1.0,
-  //       strokeColor: '#000000',
-  //       strokeWeight: 1,
-  //       map: map
-  //     });
-  //   }
-  // }
+  function drawBoxes() {
+    var boxpolys = new Array(boxes.length);
+    for (var i = 0; i < boxes.length; i++) {
+      boxpolys[i] = new google.maps.Rectangle({
+        bounds: boxes[i],
+        fillOpacity: 0,
+        strokeOpacity: 1.0,
+        strokeColor: '#000000',
+        strokeWeight: 1,
+        map: map
+      });
+    }
+  }
 
 
   function findPlaces(searchIndex) {
@@ -413,6 +433,8 @@ function initialize() {
     //radarSearch allows a 'type' search within a given radius,
     // if search is successful, create a marker for each result.
     // If not, set Timeout to allow a delay and search again due to query limits
+
+    // debugger;
     service.nearbySearch(restaurantRequest, function(results, status) {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
 
@@ -422,20 +444,34 @@ function initialize() {
           }
         }
       }
+
+      // console.log("End Lat: ", endLat);
+      // console.log("Start Lat: ", startLat);
+
       //as long as we haven't triggered the query limit, add 1 to the index and search again
       if (status != google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
         searchIndex++;
-        if (searchIndex < (boxes.length-2))
-          findPlaces(searchIndex);
+        if (startLat > endLat) {
+
+          if (searchIndex < (boxes.length-2)) {
+            findPlaces(searchIndex);
+          }
+        }
+        else if (endLat > startLat) {
+
+          if (searchIndex < boxes.length) {
+            findPlaces(searchIndex);
+          }
+        }
       } else { // delay 1 second and try again
-        setTimeout(findPlaces(searchIndex), 1000);
+        setTimeout("findPlaces(" + searchIndex + ")", 1000);
       }
 
     });
 
   }
 
-function findParks(searchIndex) {
+  function findParks(searchIndex) {
 
     // search request is defined as the area bound by each routeBox box,
     // search type is hard coded as park for testing
@@ -463,11 +499,42 @@ function findParks(searchIndex) {
         if (searchIndex < (boxes.length-2))
           findParks(searchIndex);
       } else { // delay 1 second and try again
-        setTimeout(findParks(searchIndex), 1000);
+        setTimeout("findParks(" + searchIndex + ")", 1000);
       }
 
     });
   }
+
+  // function findAmusementParks(searchIndex) {
+
+  //   // search request is defined as the area bound by each routeBox box,
+  //   // search type is hard coded as park for testing
+
+  //   var amusementParkRequest = {
+  //     bounds: boxes[searchIndex],
+  //     type: 'amusement_park'
+  //   };
+
+
+  //   //separate search for amusement parks, no ratings minimum specified
+  //    service.nearbySearch(amusementParkRequest, function(results, status) {
+  //     if (status == google.maps.places.PlacesServiceStatus.OK) {
+
+  //       for (var i = 0, result; result = results[i]; i++) {
+  //           var marker = createMarker(result);
+  //       }
+  //     }
+  //     //as long as we haven't triggered the query limit, add 1 to the index and search again
+  //     if (status != google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
+  //       searchIndex++;
+  //       if (searchIndex < (boxes.length-2))
+  //         findParks(searchIndex);
+  //     } else { // delay 1 second and try again
+  //       setTimeout(findAmusementParks(searchIndex), 1000);
+  //     }
+
+  //   });
+  // }
 
   //create markers on each returned place result
   function createMarker(place) {
