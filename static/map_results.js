@@ -385,8 +385,12 @@ function initialize() {
         var distance;
         if (driveDuration < 5400) {
           distance = 5.0; // sets search box size to 5km from route path
-        } else if (driveDuration > 5401) {
+        } else if (driveDuration > 5401 && driveDuration < 10800) {
           distance = 10.0;
+        } else if (driveDuration > 10801 && driveDuration < 16200) {
+          distance = 15.0;
+        } else if (driveDuration > 16201) {
+          distance = 20.0;
         }
 
         //path_overview smooths out the path coordinates
