@@ -98,6 +98,11 @@ def new_search():
 
 #     return render_template("map.html", key=os.environ['PLACES_SECRET_KEY'])
 
+@app.route('/d3map')
+def displayD3Map():
+    """Displays interactive D3 map"""
+
+    return render_template("d3map.html")
 
 
 
