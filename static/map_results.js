@@ -400,7 +400,7 @@ function initialize() {
 
         //turn on drawBoxes for testing if you want to visualize search boundaries,
         //function is commented out below
-        drawBoxes();
+        // drawBoxes();
 
         //since direction request was successful,
         //call findPlaces function with searchIndex zero
@@ -429,19 +429,19 @@ function initialize() {
 
 
   // Draw the array of boxes as polylines on the map - helpful to visualize search while testing
-  function drawBoxes() {
-    var boxpolys = new Array(boxes.length);
-    for (var i = 0; i < boxes.length; i++) {
-      boxpolys[i] = new google.maps.Rectangle({
-        bounds: boxes[i],
-        fillOpacity: 0,
-        strokeOpacity: 1.0,
-        strokeColor: '#000000',
-        strokeWeight: 1,
-        map: map
-      });
-    }
-  }
+  // function drawBoxes() {
+  //   var boxpolys = new Array(boxes.length);
+  //   for (var i = 0; i < boxes.length; i++) {
+  //     boxpolys[i] = new google.maps.Rectangle({
+  //       bounds: boxes[i],
+  //       fillOpacity: 0,
+  //       strokeOpacity: 1.0,
+  //       strokeColor: '#000000',
+  //       strokeWeight: 1,
+  //       map: map
+  //     });
+  //   }
+  // }
 
 
   function findPlaces(searchIndex) {
@@ -461,7 +461,6 @@ function initialize() {
     // debugger;
     service.nearbySearch(restaurantRequest, function(results, status) {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
-
         for (var i = 0, result; result = results[i]; i++) {
           if (result.rating >= 4.0){
             var marker = createMarker(result);
@@ -476,13 +475,11 @@ function initialize() {
       if (status != google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
         searchIndex++;
         if (startLat > endLat) {
-
-          if (searchIndex < (boxes.length-2)) {
+          if (searchIndex < (boxes.length - 3)) {
             findPlaces(searchIndex);
           }
         }
         else if (endLat > startLat) {
-
           if (searchIndex < boxes.length) {
             findPlaces(searchIndex);
           }
@@ -490,9 +487,7 @@ function initialize() {
       } else { // delay 1 second and try again
         setTimeout("findPlaces(" + searchIndex + ")", 1000);
       }
-
     });
-
   }
 
   function findParks(searchIndex) {
@@ -513,7 +508,7 @@ function initialize() {
         for (var i = 0, result; result = results[i]; i++) {
           if (result.rating >= 4.0) {
             // debugger;
-            var marker = createMarker(result);
+            var marker = createParkMarker(result);
           }
         }
       }
@@ -522,23 +517,18 @@ function initialize() {
         searchIndex++;
 
         if (startLat > endLat) {
-
           if (searchIndex < (boxes.length-2)) {
             findParks(searchIndex);
           }
         }
-
         else if (endLat > startLat) {
-
           if (searchIndex < boxes.length) {
             findParks(searchIndex);
           }
         }
-
       } else { // delay 1 second and try again
         setTimeout("findParks(" + searchIndex + ")", 1000);
       }
-
     });
   }
 
@@ -579,6 +569,37 @@ function initialize() {
 
     var image = {
       url: "https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle.png",
+      size: new google.maps.Size(7, 7),
+      anchor: new google.maps.Point(3.5, 3.5)
+    };
+
+    var marker = new google.maps.Marker({
+      map: map,
+      icon: image,
+      position: place.geometry.location
+    });
+
+    var infowindow = new google.maps.InfoWindow();
+
+    google.maps.event.addListener(marker, 'click', function() {
+      service.getDetails(place, function(result, status) {
+        if (status !== google.maps.places.PlacesServiceStatus.OK) {
+          console.error(status);
+          return;
+        }
+      infowindow.setContent(result.name);
+      infowindow.open(map, marker);
+      });
+    });
+
+  }
+
+  function createParkMarker(place) {
+    var placeLoc = place.geometry.location;
+
+    var image = {
+      url: "https://storage.googleapis.com/support-kms-prod/SNP_2752129_en_v0",
+      //url: "https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle_blue.png",
       size: new google.maps.Size(7, 7),
       anchor: new google.maps.Point(3.5, 3.5)
     };
