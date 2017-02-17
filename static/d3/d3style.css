@@ -26,9 +26,9 @@ circle {
   stroke: brown;
 }
 
-#cells g:hover path.arc {
+/*#cells g:hover path.arc {
   display: inherit;
-}
+}*/
 
 body {
   font: 300 36px "Helvetica Neue";
