@@ -3,6 +3,7 @@
 
 
 
+
 // function initMap() {
 
 //   var boxpolys = null;
@@ -398,9 +399,57 @@ function initialize() {
         // creates search boxes around the returned path
         boxes = routeBoxer.box(path, distance);
 
+
+
+
+        //-------starting to add Yelp functionality - does not work yet-----------
+        // debugger;
+        // console.log(boxes);
+
+        // function showYelpResults(result) {
+        //   console.log(result);
+        //   //what is this goint to return? How do I feed it back to the map?
+        // }
+
+        // function submitYelpRequest(evt) {
+        //   // evt.preventDefault();
+
+        //   // for (var i = 0; i < length(boxes); i++) {
+        //   //   lat = boxes[i].f
+        //   //   long = boxes[i].b
+        //   // }
+
+        //   //hard code values for testing
+        //   var yelpInputs = {
+        //     "sw_lat": 37.681228,   //boxes[0].f -- how do I just get the first value of this?
+        //     "sw_long": -122.528,
+        //     "ne_lat": 37.8610,
+        //     "ne_long": -122.4709,
+        //     // "params": $({'term': 'food'}),
+        //     // "type": $("#type-field").val(),
+        //     // "amount": $("#amount-field").val()
+        //   };
+
+        //   $.post("/yelp-search.json",
+        //     yelpInputs,
+        //     showYelpResults
+        //  );
+        // }
+
+
+
+
+        // ------------end of yelp section------------------------------
+
+
+
+
+
+
+
         //turn on drawBoxes for testing if you want to visualize search boundaries,
         //function is commented out below
-        // drawBoxes();
+        drawBoxes();
 
         //since direction request was successful,
         //call findPlaces function with searchIndex zero
@@ -429,19 +478,21 @@ function initialize() {
 
 
   // Draw the array of boxes as polylines on the map - helpful to visualize search while testing
-  // function drawBoxes() {
-  //   var boxpolys = new Array(boxes.length);
-  //   for (var i = 0; i < boxes.length; i++) {
-  //     boxpolys[i] = new google.maps.Rectangle({
-  //       bounds: boxes[i],
-  //       fillOpacity: 0,
-  //       strokeOpacity: 1.0,
-  //       strokeColor: '#000000',
-  //       strokeWeight: 1,
-  //       map: map
-  //     });
-  //   }
-  // }
+  function drawBoxes() {
+    var boxpolys = new Array(boxes.length);
+    for (var i = 0; i < boxes.length; i++) {
+      boxpolys[i] = new google.maps.Rectangle({
+        bounds: boxes[i],
+        fillOpacity: 0,
+        strokeOpacity: 1.0,
+        strokeColor: '#000000',
+        strokeWeight: 1,
+        map: map
+      });
+    }
+  }
+
+
 
 
   function findPlaces(searchIndex) {
@@ -501,6 +552,7 @@ function initialize() {
     };
 
 
+
     //separate search for second parameter (parks only), returns parks with 4.0 rating or higher
      service.nearbySearch(parkRequest, function(results, status) {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
@@ -531,6 +583,36 @@ function initialize() {
       }
     });
   }
+
+  submitYelpRequest();
+  var yelp_rating_graphic;
+  var yelp_link;
+
+  function showYelpResults(result) {
+    yelp_rating_graphic = result[1];
+    yelp_link = result[0];
+          console.log(yelp_rating_graphic, yelp_link);
+          //this should return an object, use var first = resp.businesses[1] to get park,
+          // first.name, first.url, first.rating_img_url
+  }
+
+  function submitYelpRequest() {
+
+    //hard coded for testing (later use term: result.name)
+    var params = {
+    'term': 'Wildwood Park',
+    'type': 'park'
+    };
+
+
+    $.get("/yelp-search",
+            params,
+            showYelpResults
+         );
+        }
+
+
+
 
   // function findAmusementParks(searchIndex) {
 
@@ -610,7 +692,6 @@ function initialize() {
       position: place.geometry.location
     });
 
-    var infowindow = new google.maps.InfoWindow();
 
     google.maps.event.addListener(marker, 'click', function() {
       service.getDetails(place, function(result, status) {
@@ -618,7 +699,21 @@ function initialize() {
           console.error(status);
           return;
         }
-      infowindow.setContent(result.name);
+
+          var contentString =
+            '</div>' +
+            '<h3>' + result.name + '</h3>'+
+            '<p><img src=' + yelp_rating_graphic + '></p>'+
+            '<p><a target="blank" href='+ yelp_link + '>Link to Yelp: </a></p>';
+
+
+      // var contentString = "<div>" + result.name + "</div>";
+      // contentString += "<a target='blank' href='http://google.com'>Search the web!</a>";
+
+
+      var infowindow = new google.maps.InfoWindow({content: contentString});
+
+      // infowindow.setContent(result.name);
       infowindow.open(map, marker);
       });
     });

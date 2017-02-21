@@ -1,11 +1,12 @@
 """Road Trip app"""
 
 from jinja2 import StrictUndefined
-from flask import Flask, render_template, request, flash, redirect, session
+from flask import Flask, render_template, request, flash, redirect, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, User, db
 import os
+import yelping
 
 
 app = Flask(__name__)
@@ -90,6 +91,55 @@ def new_search():
     return render_template("map.html", start=start,
                                     end=end,
                                     key=os.environ['PLACES_SECRET_KEY'])
+
+
+@app.route("/yelp-search")
+def yelpRestaurantSearch():
+    """Search Yelp for restaurants along path using bounding boxes"""
+
+    term = request.args.get("term")
+    search_type = request.args.get("type")
+
+    params = {"term": term, "type": search_type}
+
+    print "Params", params
+
+    resp = yelping.client.search('San Francisco', **params)
+
+
+    # request.form = {
+    #     'sw_lat': 123.45,
+    #     'sw_long': 235.67
+    # }
+
+    # hard code for now
+    # params = {
+    #     'term': 'food'
+    # }
+
+    # resp = yelping.client.search_by_bounding_box(
+    #     request.form["sw_lat"],
+    #     request.form["sw_long"],
+    #     request.form["ne_lat"],
+    #     request.form["ne_long"],
+    #     **params
+    # )
+    print "I got to the yelp search"
+    print "search results", resp
+
+    # import pdb
+    # pdb.set_trace()
+
+    yelp_link = resp.businesses[0].url
+    rating_graphic = resp.businesses[0].rating_img_url
+
+    #must remove quotation marks from result to get a valid url:
+
+
+    return jsonify([yelp_link,rating_graphic])
+    # return resp.businesses[0].name # cannot jsonify because it returns an object
+
+
 
 
 # @app.route('/map')

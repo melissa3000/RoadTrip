@@ -1,3 +1,4 @@
 /env
 secrets*
 *pyc
+config_secret.json
