@@ -344,11 +344,7 @@ function initialize() {
     // };
 
 
-    // why don't these work?
-    // var start = "{{ start }}";
-    // var end = "{{ end }}";
-    // var start = $('#start').val();
-    // var end = $('#end').val();
+
 
     //search parameters for draw path request: start point, end point, travel method
     var pathRequest = {
@@ -398,52 +394,6 @@ function initialize() {
         var path = result.routes[0].overview_path;
         // creates search boxes around the returned path
         boxes = routeBoxer.box(path, distance);
-
-
-
-
-        //-------starting to add Yelp functionality - does not work yet-----------
-        // debugger;
-        // console.log(boxes);
-
-        // function showYelpResults(result) {
-        //   console.log(result);
-        //   //what is this goint to return? How do I feed it back to the map?
-        // }
-
-        // function submitYelpRequest(evt) {
-        //   // evt.preventDefault();
-
-        //   // for (var i = 0; i < length(boxes); i++) {
-        //   //   lat = boxes[i].f
-        //   //   long = boxes[i].b
-        //   // }
-
-        //   //hard code values for testing
-        //   var yelpInputs = {
-        //     "sw_lat": 37.681228,   //boxes[0].f -- how do I just get the first value of this?
-        //     "sw_long": -122.528,
-        //     "ne_lat": 37.8610,
-        //     "ne_long": -122.4709,
-        //     // "params": $({'term': 'food'}),
-        //     // "type": $("#type-field").val(),
-        //     // "amount": $("#amount-field").val()
-        //   };
-
-        //   $.post("/yelp-search.json",
-        //     yelpInputs,
-        //     showYelpResults
-        //  );
-        // }
-
-
-
-
-        // ------------end of yelp section------------------------------
-
-
-
-
 
 
 
@@ -584,32 +534,32 @@ function initialize() {
     });
   }
 
-  submitYelpRequest();
-  var yelp_rating_graphic;
-  var yelp_link;
+  // submitYelpRequest();
+  // var yelp_rating_graphic;
+  // var yelp_link;
 
-  function showYelpResults(result) {
-    yelp_rating_graphic = result[1];
-    yelp_link = result[0];
-          console.log(yelp_rating_graphic, yelp_link);
-          //this should return an object, use var first = resp.businesses[1] to get park,
-          // first.name, first.url, first.rating_img_url
-  }
+  // function showYelpResults(result) {
+  //   yelp_rating_graphic = result[1];
+  //   yelp_link = result[0];
+  //         console.log(yelp_rating_graphic, yelp_link);
+  //         //this should return an object, use var first = resp.businesses[1] to get park,
+  //         // first.name, first.url, first.rating_img_url
+  // }
 
-  function submitYelpRequest() {
+  // function submitYelpRequest() {
 
-    //hard coded for testing (later use term: result.name)
-    var params = {
-    'term': 'Wildwood Park',
-    'type': 'park'
-    };
+  //   //hard coded for testing (later use term: result.name)
+  //   var params = {
+  //   'term': 'Wildwood Park',
+  //   'type': 'park'
+  //   };
 
 
-    $.get("/yelp-search",
-            params,
-            showYelpResults
-         );
-        }
+  //   $.get("/yelp-search",
+  //           params,
+  //           showYelpResults
+  //        );
+  //       }
 
 
 
