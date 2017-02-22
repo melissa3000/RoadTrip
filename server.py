@@ -108,9 +108,9 @@ def saved_trips():
     db.session.add(new_trip)
     db.session.commit()
 
-    flash("Thank you for saving a trip")
+    flash("Your trip has been saved for later")
     #code 307 preserves the original form method through the redirect
-    # return redirect("/login", code=307)
+    return redirect("/map", 307)
 
 
 
