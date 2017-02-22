@@ -4,7 +4,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, flash, redirect, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, User, db
+from model import connect_to_db, User, Trip, db
 import os
 import yelping
 
@@ -91,6 +91,27 @@ def new_search():
     return render_template("map.html", start=start,
                                     end=end,
                                     key=os.environ['PLACES_SECRET_KEY'])
+
+
+@app.route('/saved', methods=['POST'])
+def saved_trips():
+    """Allows user to save trips and adds them to database"""
+
+    trip_name = request.form.get("trip_name")
+    start = request.form.get("start")
+    end = request.form.get("end")
+
+    user_id = session.get("user_id")
+
+    new_trip = Trip(user_id=user_id, trip_name=trip_name, start=start, end=end)
+
+    db.session.add(new_trip)
+    db.session.commit()
+
+    flash("Thank you for saving a trip")
+    #code 307 preserves the original form method through the redirect
+    # return redirect("/login", code=307)
+
 
 
 @app.route("/yelp-search")

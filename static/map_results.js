@@ -399,7 +399,7 @@ function initialize() {
 
         //turn on drawBoxes for testing if you want to visualize search boundaries,
         //function is commented out below
-        drawBoxes();
+        // drawBoxes();
 
         //since direction request was successful,
         //call findPlaces function with searchIndex zero
@@ -428,19 +428,19 @@ function initialize() {
 
 
   // Draw the array of boxes as polylines on the map - helpful to visualize search while testing
-  function drawBoxes() {
-    var boxpolys = new Array(boxes.length);
-    for (var i = 0; i < boxes.length; i++) {
-      boxpolys[i] = new google.maps.Rectangle({
-        bounds: boxes[i],
-        fillOpacity: 0,
-        strokeOpacity: 1.0,
-        strokeColor: '#000000',
-        strokeWeight: 1,
-        map: map
-      });
-    }
-  }
+  // function drawBoxes() {
+  //   var boxpolys = new Array(boxes.length);
+  //   for (var i = 0; i < boxes.length; i++) {
+  //     boxpolys[i] = new google.maps.Rectangle({
+  //       bounds: boxes[i],
+  //       fillOpacity: 0,
+  //       strokeOpacity: 1.0,
+  //       strokeColor: '#000000',
+  //       strokeWeight: 1,
+  //       map: map
+  //     });
+  //   }
+  // }
 
 
 
@@ -453,11 +453,6 @@ function initialize() {
       bounds: boxes[searchIndex],
       type: 'restaurant'
     };
-
-
-    //radarSearch allows a 'type' search within a given radius,
-    // if search is successful, create a marker for each result.
-    // If not, set Timeout to allow a delay and search again due to query limits
 
     // debugger;
     service.nearbySearch(restaurantRequest, function(results, status) {
@@ -672,83 +667,4 @@ function initialize() {
 
 }
 initialize();
-
-
-
-//=============================================================================
-//---------------Brainstorming / this section doesn't work------------------------
-//==============================================================================
-
-//   //Creates path overlay on map from start to end location, hard coded for stinson beach to petaluma
-  // function displayDirections() {
-
-  //   var stinsonBeach = {lat:37.9005, lng: -122.6444};
-  //   var petaluma = {lat: 38.2324, lng: -122.6367};
-
-  //   var request = {
-  //     origin: oakland, // start
-  //     destination: petaluma, // end
-  //     travelMode: google.maps.TravelMode.DRIVING
-  //   };
-
-  //   var directionsService = new google.maps.DirectionsService();
-  //   directionsService.route(request, function(response, status) {
-  //     if (status === google.maps.DirectionsStatus.OK) {
-  //       directionsDisplay.setDirections(response);
-
-  //       var placesService = new google.maps.places.PlacesService(map);
-
-  //       //assigns path variable to first item in Google's returned overview_path result (smooths out lat/long result into a line)
-  //       // var path = response.routes[0].overview_path;
-
-  //       // for (var i = 0; i < path.length; i += 10){
-  //       //    var radarRequest = {
-  //       //     location: path[i],
-  //       //     radius: 1000, //meters
-  //       //     types: ['restaurant']
-  //       //   };
-
-  //       //   placesService.radarSearch(radarRequest, processRadarResults);
-  //       // }
-
-  //       // var radarRequest = {
-  //       //     location: path[324],
-  //       //     radius: 1000,
-  //       //     types: ['restaurant']
-  //       //   };
-
-  //       // var placesService = new google.maps.places.PlacesService(map);
-  //       // placesService.radarSearch(radarRequest, processRadarResults)
-
-  //       //creates boxes variable to be fed to routeBoxer with path and distance parameters
-  //       // var boxes = routeBoxer.box(path, 2);
-  //       // alert(boxes.length);
-  //       // drawBoxes(boxes);
-  //       findPlaces(boxes,0);
-  //     } else {
-  //       window.alert('Directions request failed due to ' + status);
-  //     }
-  //   });
-
-  //   var directionsDisplay = new google.maps.DirectionsRenderer();
-  //   directionsDisplay.setMap(map);
-
-
-    // var routeBoxer = new RouteBoxer();
-
-
-  // }
-
-
-
-
-  // displayDirections();
-
-
-//   //incorporate later when start and end are taken from DOM
-//   // var start = document.getElementById('start').value;
-//   // var end = document.getElementById('end').value;
-
-
-
 

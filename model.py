@@ -22,6 +22,27 @@ class User(db.Model):
 
         return "<User user_id: %s username: %s>" % (self.user_id, self.username)
 
+class Trip(db.Model):
+    """Trip"""
+
+    __tablename__ = "trips"
+
+    trip_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    trip_name = db.Column(db.String(100))
+    start = db.Column(db.String(75))
+    end = db.Column(db.String(75))
+
+    # Define relationship to user
+    user = db.relationship("User",
+                            backref=db.backref("trips", order_by=trip_id))
+
+    def __repr__(self):
+        """Provides helpful representation when printed"""
+
+        return "<Trip trip_id=%s trip_name=%s user_id=%s start=%s end=%s" % (
+            self.trip_id, self.trip_name, self.user_id, self.start, self.end)
+
 
 
 

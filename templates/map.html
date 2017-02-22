@@ -50,6 +50,16 @@
     </script>
     <script src="/static/map_results.js"></script>
 
+    <p>Want to save this trip? Give it a name and click "Save"</p>
+    <form action="/saved" method="POST">
+      <label for="trip_name"> Trip Name:</label>
+      <input id="trip_name" type="text" name="trip_name">
+
+      <input id="start" type="hidden" name="start" value="{{ start }}">
+
+      <input type="submit" name="save_trip" value="Save">
+    </form>
+
   </body>
 
 

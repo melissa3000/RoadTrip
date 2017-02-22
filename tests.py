@@ -1,5 +1,5 @@
 from unittest import TestCase
-from model import connect_to_db, db #, example_data
+from model import connect_to_db, db
 from server import app
 from flask import session
 
