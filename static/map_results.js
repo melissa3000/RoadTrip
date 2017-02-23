@@ -294,23 +294,21 @@
 // }
 // initialize();
 
+//========================================================================
+// Last commit before removing build history
+//========================================================================
 
 
-//-------------------------------------------------------------------------
-//Search updated to Nearby and boxes closest to origin not included in search
-//--------------------------------------------------------------------------
 
-function initialize() {
-  // intial map hard coded to center at Oakland
-  var oakland = {lat: 37.8044, lng: -122.2711};
 
-  var mapOptions = {
-    center: oakland,
-    zoom: 8
-  };
+  function drawPath(start, end, map) {
 
-  var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-  var service = new google.maps.places.PlacesService(map);
+  var boxes;
+  var endLat;
+  var startLat;
+  var driveDistance; // in meters
+  var driveDuration; // drive time in seconds
+
 
   //assigns variable routeBoxer as new object from RouteBoxer library
   var routeBoxer = new RouteBoxer();
@@ -322,15 +320,6 @@ function initialize() {
     map: map
   });
 
-  drawPath();
-
-  var boxes;
-  var endLat;
-  var startLat;
-  var driveDistance; // in meters
-  var driveDuration; // drive time in seconds
-
-  function drawPath() {
 
     //search parameters for draw path request: start point, end point, travel method
     var pathRequest = {
@@ -423,6 +412,27 @@ function initialize() {
     });
 
   }
+
+
+
+//-------------------------------------------------------------------------
+//Search updated to Nearby and boxes closest to origin not included in search
+//--------------------------------------------------------------------------
+
+function initialize() {
+  // intial map hard coded to center at Oakland
+  var oakland = {lat: 37.8044, lng: -122.2711};
+
+  var mapOptions = {
+    center: oakland,
+    zoom: 8
+  };
+
+  var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+  var service = new google.maps.places.PlacesService(map);
+
+  drawPath(start, end, map);
+
 
 
 
