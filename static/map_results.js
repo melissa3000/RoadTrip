@@ -417,6 +417,8 @@ function initialize() {
         $("#save-trip").on('submit', addTrip);
 
 
+        //-------------------------------------------------------------------
+
         //turn on drawBoxes for testing if you want to visualize search boundaries,
         //function is commented out below
         // drawBoxes();
@@ -549,32 +551,11 @@ function initialize() {
     });
   }
 
-  // submitYelpRequest();
-  // var yelp_rating_graphic;
-  // var yelp_link;
 
-  // function showYelpResults(result) {
-  //   yelp_rating_graphic = result[1];
-  //   yelp_link = result[0];
-  //         console.log(yelp_rating_graphic, yelp_link);
-  //         //this should return an object, use var first = resp.businesses[1] to get park,
-  //         // first.name, first.url, first.rating_img_url
-  // }
-
-  // function submitYelpRequest() {
-
-  //   //hard coded for testing (later use term: result.name)
-  //   var params = {
-  //   'term': 'Wildwood Park',
-  //   'type': 'park'
-  //   };
+  var yelp_rating_graphic;
+  var yelp_link;
 
 
-  //   $.get("/yelp-search",
-  //           params,
-  //           showYelpResults
-  //        );
-  //       }
 
 
 
@@ -641,6 +622,8 @@ function initialize() {
 
   }
 
+  // var isPaused = false;
+
   function createParkMarker(place) {
     var placeLoc = place.geometry.location;
 
@@ -665,11 +648,37 @@ function initialize() {
           return;
         }
 
+        submitYelpRequest();
+
           var contentString =
             '</div>' +
             '<h3>' + result.name + '</h3>'+
             '<p><img src=' + yelp_rating_graphic + '></p>'+
             '<p><a target="blank" href='+ yelp_link + '>Link to Yelp: </a></p>';
+
+
+    function showYelpResults(result) {
+      yelp_rating_graphic = result[1];
+      yelp_link = result[0];
+          console.log(yelp_rating_graphic, yelp_link);
+    //         //this should return an object, use var first = resp.businesses[1] to get park,
+    //         // first.name, first.url, first.rating_img_url
+    }
+
+    function submitYelpRequest() {
+
+      //hard coded for testing (later use term: result.name)
+      var params = {
+      'term': result.name,
+      'type': 'park'
+    };
+
+
+    $.get("/yelp-search",
+            params,
+            showYelpResults
+         );
+    }
 
 
       // var contentString = "<div>" + result.name + "</div>";
