@@ -1,7 +1,6 @@
 "use strict";
 
 
-
 function drawPath(start, end, map) {
 
   var endLat;
@@ -77,9 +76,11 @@ function drawPath(start, end, map) {
         }
 
         if (startLat > endLat) {
-          findPlaces(0, startLat, endLat, boxes, map);
+          findPlaces(0, startLat, endLat, boxes, map, 'restaurant');
+          findPlaces(0, startLat, endLat, boxes, map, 'park');
         } else if (endLat > startLat) {
-          findPlaces(2, startLat, endLat, boxes, map);
+          findPlaces(2, startLat, endLat, boxes, map, 'restaurant');
+          findPlaces(2, startLat, endLat, boxes, map, 'park');
         }
       } else {
         alert("Directions query failed: " + status);
@@ -157,14 +158,14 @@ $("#save-trip").on('submit', addTrip);
 
 
 
-function findPlaces(searchIndex, startLat, endLat, boxes, map) {
+function findPlaces(searchIndex, startLat, endLat, boxes, map, type) {
   // debugger;
 
   // search request is defined as the area bound by each routeBox box,
   // search type is hard coded as restaurant for testing
   var restaurantRequest = {
     bounds: boxes[searchIndex],
-    type: 'restaurant'
+    type: type
   };
 
   var service = new google.maps.places.PlacesService(map);
@@ -183,11 +184,11 @@ function findPlaces(searchIndex, startLat, endLat, boxes, map) {
       searchIndex++;
       if (startLat > endLat) {
         if (searchIndex < (boxes.length - 3)) {
-          findPlaces(searchIndex, startLat, endLat, boxes, map);
+          findPlaces(searchIndex, startLat, endLat, boxes, map, type);
         }
       } else if (endLat > startLat) {
           if (searchIndex < boxes.length) {
-            findPlaces(searchIndex, startLat, endLat, boxes, map);
+            findPlaces(searchIndex, startLat, endLat, boxes, map, type);
           }
         }
     }
