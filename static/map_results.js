@@ -398,7 +398,7 @@ function initialize() {
 
         //------------Save Trips to DB-------------------------------------
         function tripAdded(result) {
-          alert(result);
+          console.log('successfuly saved');
         }
 
         function addTrip(evt) {
@@ -407,7 +407,7 @@ function initialize() {
           var formInputs = {
             'start': start,
             'end': end,
-            'trip_name': $('trip_name').val()
+            'trip_name': $('#trip_name').val()
           };
 
           $.post("/saved-trips", formInputs, tripAdded );

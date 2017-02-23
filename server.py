@@ -111,7 +111,10 @@ def saved_trips():
     # flash("Your trip has been saved for later")
     #code 307 preserves the original form method through the redirect
     # return redirect("/map", 307)
-    return "Your trip has been saved for later"
+
+    flash("Your trip has been saved for later")
+
+    return redirect("/map", 307)
 
 
 
