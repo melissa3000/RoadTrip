@@ -332,33 +332,12 @@ function initialize() {
 
   function drawPath() {
 
-
-
-    // hard coded parameters used for testing / troubleshooting / this works as written
-    //search parameters for draw path request: start point, end point, travel method
-    // var pathRequest = {
-    //   origin: {lat: 37.8044, lng: -122.2711}, // hard coded to oakland for testing
-    //   destination: {lat: 38.2324, lng: -122.6367}, // hard coded to petaluma for testing
-    //   // destination: {lat: 38.5816, lng: -121.4944}, // hard coded to sacramento for testing
-    //   travelMode: google.maps.DirectionsTravelMode.DRIVING
-    // };
-
-
-
-
     //search parameters for draw path request: start point, end point, travel method
     var pathRequest = {
-      // origin: document.getElementById('start').value,
       origin: start,
-      // origin: 'sacramento',
-      // destination: document.getElementById('end').value,
       destination: end,
-      // destination: 'oakland',
       travelMode: google.maps.DirectionsTravelMode.DRIVING
     };
-
-
-
 
     // Make the directions request, if the status is ok, create a path and
     // routeBox search boxes along the path
@@ -438,8 +417,6 @@ function initialize() {
         } else if (endLat > startLat) {
           findPlaces(2);
         }
-
-        // findAmusementParks(0);
       } else {
         alert("Directions query failed: " + status);
       }
@@ -627,29 +604,20 @@ function initialize() {
       yelp_rating_graphic = result[1];
       yelp_link = result[0];
           console.log(yelp_rating_graphic, yelp_link);
-    //         //this should return an object, use var first = resp.businesses[1] to get park,
-    //         // first.name, first.url, first.rating_img_url
     }
 
     function submitYelpRequest() {
 
-      //hard coded for testing (later use term: result.name)
       var params = {
       'term': result.name,
       'type': 'park'
     };
-
 
     $.get("/yelp-search",
             params,
             showYelpResults
          );
     }
-
-
-      // var contentString = "<div>" + result.name + "</div>";
-      // contentString += "<a target='blank' href='http://google.com'>Search the web!</a>";
-
 
       var infowindow = new google.maps.InfoWindow({content: contentString});
 
