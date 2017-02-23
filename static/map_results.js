@@ -557,40 +557,6 @@ function initialize() {
 
 
 
-
-
-
-  // function findAmusementParks(searchIndex) {
-
-  //   // search request is defined as the area bound by each routeBox box,
-  //   // search type is hard coded as park for testing
-
-  //   var amusementParkRequest = {
-  //     bounds: boxes[searchIndex],
-  //     type: 'amusement_park'
-  //   };
-
-
-  //   //separate search for amusement parks, no ratings minimum specified
-  //    service.nearbySearch(amusementParkRequest, function(results, status) {
-  //     if (status == google.maps.places.PlacesServiceStatus.OK) {
-
-  //       for (var i = 0, result; result = results[i]; i++) {
-  //           var marker = createMarker(result);
-  //       }
-  //     }
-  //     //as long as we haven't triggered the query limit, add 1 to the index and search again
-  //     if (status != google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
-  //       searchIndex++;
-  //       if (searchIndex < (boxes.length-2))
-  //         findParks(searchIndex);
-  //     } else { // delay 1 second and try again
-  //       setTimeout(findAmusementParks(searchIndex), 1000);
-  //     }
-
-  //   });
-  // }
-
   //create markers on each returned place result
   function createMarker(place) {
     var placeLoc = place.geometry.location;
