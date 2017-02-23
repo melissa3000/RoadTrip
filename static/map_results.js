@@ -396,6 +396,26 @@ function initialize() {
         boxes = routeBoxer.box(path, distance);
 
 
+        //------------Save Trips to DB-------------------------------------
+        function tripAdded(result) {
+          alert(result);
+        }
+
+        function addTrip(evt) {
+          evt.preventDefault();
+
+          var formInputs = {
+            'start': start,
+            'end': end,
+            'trip_name': $('trip_name').val()
+          };
+
+          $.post("/saved-trips", formInputs, tripAdded );
+        }
+
+
+        $("#save-trip").on('submit', addTrip);
+
 
         //turn on drawBoxes for testing if you want to visualize search boundaries,
         //function is commented out below
@@ -667,4 +687,6 @@ function initialize() {
 
 }
 initialize();
+
+
 

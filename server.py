@@ -93,7 +93,7 @@ def new_search():
                                     key=os.environ['PLACES_SECRET_KEY'])
 
 
-@app.route('/saved', methods=['POST'])
+@app.route('/saved-trips', methods=['POST'])
 def saved_trips():
     """Allows user to save trips and adds them to database"""
 
@@ -108,9 +108,10 @@ def saved_trips():
     db.session.add(new_trip)
     db.session.commit()
 
-    flash("Your trip has been saved for later")
+    # flash("Your trip has been saved for later")
     #code 307 preserves the original form method through the redirect
-    return redirect("/map", 307)
+    # return redirect("/map", 307)
+    return "Your trip has been saved for later"
 
 
 
