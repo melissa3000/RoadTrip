@@ -114,7 +114,7 @@ def saved_trips():
 
     flash("Your trip has been saved for later")
 
-    return redirect("/map", 307)
+    return "succeess"
 
 
 
@@ -157,11 +157,12 @@ def yelpRestaurantSearch():
 
     yelp_link = resp.businesses[0].url
     rating_graphic = resp.businesses[0].rating_img_url
+    yelp_name = resp.businesses[0].name
 
     #must remove quotation marks from result to get a valid url:
 
 
-    return jsonify([yelp_link,rating_graphic])
+    return jsonify([yelp_link, rating_graphic, yelp_name])
     # return resp.businesses[0].name # cannot jsonify because it returns an object
 
 

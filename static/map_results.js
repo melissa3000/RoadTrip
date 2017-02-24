@@ -1,6 +1,6 @@
 "use strict";
 
-
+$(document).ready(function() {
 function drawPath(start, end, map) {
 
   var endLat;
@@ -107,14 +107,27 @@ function drawBoxes(boxes, map) {
 }
 
 //create markers on each returned place result
-function createMarker(place, map, service) {
+function createMarker(place, map, service, type) {
   var placeLoc = place.geometry.location;
+  var gsize = new google.maps.Size(7, 7)
 
-  var image = {
+  var image;
+
+  if (type == 'park') {
+    image = {
+      url: "https://storage.googleapis.com/support-kms-prod/SNP_2752129_en_v0",
+      //url: "https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle_blue.png",
+      size: gsize,
+      anchor: new google.maps.Point(3.5, 3.5)
+    };
+  } else {
+    image = {
     url: "https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle.png",
-    size: new google.maps.Size(7, 7),
+    size: gsize,
     anchor: new google.maps.Point(3.5, 3.5)
-  };
+    };
+  }
+
 
   var marker = new google.maps.Marker({
     map: map,
@@ -122,16 +135,40 @@ function createMarker(place, map, service) {
     position: place.geometry.location
   });
 
-  var infowindow = new google.maps.InfoWindow();
+  // var infowindow = new google.maps.InfoWindow();
 
   google.maps.event.addListener(marker, 'click', function() {
-    service.getDetails(place, function(result, status) {
+    service.getDetails(place, function(placesResult, status) {
       if (status !== google.maps.places.PlacesServiceStatus.OK) {
         console.error(status);
         return;
       }
-    infowindow.setContent(result.name);
-    infowindow.open(map, marker);
+
+
+    // get yelp data
+    var params = {
+      'term': placesResult.name,
+      'type': type
+    };
+
+    $.get("/yelp-search", params, function(yelpResult) {
+
+       var markerData = {
+        placesResult: placesResult,
+        yelpResult: yelpResult,
+        map: map,
+        type: type,
+        marker: marker
+      };
+
+       createMarkerInfoWindow(markerData);
+
+    });
+
+    // console.log(yelp_rating_graphic);
+    // console.log(yelp_link);
+
+
     });
   });
 }
@@ -157,6 +194,8 @@ function addTrip(evt) {
 $("#save-trip").on('submit', addTrip);
 
 
+// var yelp_rating_graphic;
+// var yelp_link;
 
 function findPlaces(searchIndex, startLat, endLat, boxes, map, type) {
   // debugger;
@@ -170,13 +209,18 @@ function findPlaces(searchIndex, startLat, endLat, boxes, map, type) {
 
   var service = new google.maps.places.PlacesService(map);
 
+
   service.nearbySearch(restaurantRequest, function(results, status) {
     if (status == google.maps.places.PlacesServiceStatus.OK) {
       for (var i = 0, result; result = results[i]; i++) {
         if (result.rating >= 4.0){
-          var marker = createMarker(result, map, service);
+          // submitYelpRequest(result, type);
+          var marker = createMarker(result, map, service, type);
+
         }
+        // submitYelpRequest(result, type);
       }
+
     }
 
     //as long as we haven't triggered the query limit, add 1 to the index and search again
@@ -199,6 +243,23 @@ function findPlaces(searchIndex, startLat, endLat, boxes, map, type) {
   });
 }
 
+function createMarkerInfoWindow(markerData) {
+  var yelp_rating_graphic = markerData.yelpResult[1];
+  var yelp_link = markerData.yelpResult[0];
+  var name = markerData.placesResult.name;
+
+
+      var contentString =
+            '</div>' +
+            '<h3>' + name + '</h3>'+
+            '<p><img src=' + yelp_rating_graphic + '></p>'+
+            '<p><a target="blank" href='+ yelp_link + '>Link to Yelp: </a></p>';
+    console.log(contentString);
+
+    var infowindow = new google.maps.InfoWindow({content: contentString});
+    infowindow.open(markerData.map, markerData.marker);
+    // console.log(yelp_rating_graphic, yelp_link);
+}
 
 
 //-------------------------------------------------------------------------
@@ -226,122 +287,53 @@ function initialize() {
 
 
 
-  function findParks(searchIndex) {
 
-    // search request is defined as the area bound by each routeBox box,
-    // search type is hard coded as park for testing
+//   function createParkMarker(place) {
+//     var placeLoc = place.geometry.location;
 
-    var parkRequest = {
-      bounds: boxes[searchIndex],
-      type: 'park'
-    };
+//     var image = {
+//       url: "https://storage.googleapis.com/support-kms-prod/SNP_2752129_en_v0",
+//       //url: "https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle_blue.png",
+//       size: new google.maps.Size(7, 7),
+//       anchor: new google.maps.Point(3.5, 3.5)
+//     };
 
-
-
-    //separate search for second parameter (parks only), returns parks with 4.0 rating or higher
-     service.nearbySearch(parkRequest, function(results, status) {
-      if (status == google.maps.places.PlacesServiceStatus.OK) {
-
-        for (var i = 0, result; result = results[i]; i++) {
-          if (result.rating >= 4.0) {
-            // debugger;
-            var marker = createParkMarker(result);
-          }
-        }
-      }
-      //as long as we haven't triggered the query limit, add 1 to the index and search again
-      if (status != google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
-        searchIndex++;
-
-        if (startLat > endLat) {
-          if (searchIndex < (boxes.length-2)) {
-            findParks(searchIndex);
-          }
-        }
-        else if (endLat > startLat) {
-          if (searchIndex < boxes.length) {
-            findParks(searchIndex);
-          }
-        }
-      } else { // delay 1 second and try again
-        setTimeout("findParks(" + searchIndex + ")", 1000);
-      }
-    });
-  }
+//     var marker = new google.maps.Marker({
+//       map: map,
+//       icon: image,
+//       position: place.geometry.location
+//     });
 
 
-  var yelp_rating_graphic;
-  var yelp_link;
+//     google.maps.event.addListener(marker, 'click', function() {
+//       service.getDetails(place, function(result, status) {
+//         if (status !== google.maps.places.PlacesServiceStatus.OK) {
+//           console.error(status);
+//           return;
+//         }
+
+
+
+//           var contentString =
+//             '</div>' +
+//             '<h3>' + result.name + '</h3>'+
+//             '<p><img src=' + yelp_rating_graphic + '></p>'+
+//             '<p><a target="blank" href='+ yelp_link + '>Link to Yelp: </a></p>';
 
 
 
 
+//       var infowindow = new google.maps.InfoWindow({content: contentString});
 
-  // var isPaused = false;
+//       // infowindow.setContent(result.name);
+//       infowindow.open(map, marker);
+//       });
+//     });
 
-  function createParkMarker(place) {
-    var placeLoc = place.geometry.location;
-
-    var image = {
-      url: "https://storage.googleapis.com/support-kms-prod/SNP_2752129_en_v0",
-      //url: "https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle_blue.png",
-      size: new google.maps.Size(7, 7),
-      anchor: new google.maps.Point(3.5, 3.5)
-    };
-
-    var marker = new google.maps.Marker({
-      map: map,
-      icon: image,
-      position: place.geometry.location
-    });
-
-
-    google.maps.event.addListener(marker, 'click', function() {
-      service.getDetails(place, function(result, status) {
-        if (status !== google.maps.places.PlacesServiceStatus.OK) {
-          console.error(status);
-          return;
-        }
-
-        submitYelpRequest();
-
-          var contentString =
-            '</div>' +
-            '<h3>' + result.name + '</h3>'+
-            '<p><img src=' + yelp_rating_graphic + '></p>'+
-            '<p><a target="blank" href='+ yelp_link + '>Link to Yelp: </a></p>';
-
-
-    function showYelpResults(result) {
-      yelp_rating_graphic = result[1];
-      yelp_link = result[0];
-          console.log(yelp_rating_graphic, yelp_link);
-    }
-
-    function submitYelpRequest() {
-
-      var params = {
-      'term': result.name,
-      'type': 'park'
-    };
-
-    $.get("/yelp-search",
-            params,
-            showYelpResults
-         );
-    }
-
-      var infowindow = new google.maps.InfoWindow({content: contentString});
-
-      // infowindow.setContent(result.name);
-      infowindow.open(map, marker);
-      });
-    });
-
-  }
+//   }
 
 }
 initialize();
 
-
+});
 
