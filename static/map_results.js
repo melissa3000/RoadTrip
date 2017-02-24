@@ -1,6 +1,23 @@
 "use strict";
 
 $(document).ready(function() {
+
+function initialize() {
+  // intial map hard coded to center at Oakland
+  var oakland = {lat: 37.8044, lng: -122.2711};
+
+  var mapOptions = {
+    center: oakland,
+    zoom: 8
+  };
+
+  var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+  var service = new google.maps.places.PlacesService(map);
+
+  drawPath(start, end, map);
+}
+
+
 function drawPath(start, end, map) {
 
   var endLat;
@@ -37,7 +54,6 @@ function drawPath(start, end, map) {
         driveDistance = result.routes[0].legs[0].distance.value;
         driveDuration = result.routes[0].legs[0].duration.value;
 
-
         var distance;
 
         // sets search box size to depending on length of route path (in km)
@@ -63,18 +79,10 @@ function drawPath(start, end, map) {
         //function is commented out below
         drawBoxes(boxes, map);
 
-
-
         //since direction request was successful,
         //call findPlaces function with searchIndex zero
 
         //allows selection of search boxes to adjust based on origin/destation direction
-        if (startLat > endLat) {
-          // findParks(0);
-        } else if (endLat > startLat) {
-          // findParks(2);
-        }
-
         if (startLat > endLat) {
           findPlaces(0, startLat, endLat, boxes, map, 'restaurant');
           findPlaces(0, startLat, endLat, boxes, map, 'park');
@@ -106,28 +114,65 @@ function drawBoxes(boxes, map) {
   }
 }
 
+function findPlaces(searchIndex, startLat, endLat, boxes, map, type) {
+  // debugger;
+
+  // search request is defined as the area bound by each routeBox box,
+  // search type is hard coded as restaurant for testing
+  var restaurantRequest = {
+    bounds: boxes[searchIndex],
+    type: type
+  };
+
+  var service = new google.maps.places.PlacesService(map);
+
+
+  service.nearbySearch(restaurantRequest, function(results, status) {
+    if (status == google.maps.places.PlacesServiceStatus.OK) {
+      for (var i = 0, result; result = results[i]; i++) {
+        if (result.rating >= 4.0){
+          var marker = createMarker(result, map, service, type);
+        }
+      }
+    }
+
+    //as long as we haven't triggered the query limit, add 1 to the index and search again
+    if (status != google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
+      searchIndex++;
+      if (startLat > endLat) {
+        if (searchIndex < (boxes.length - 3)) {
+          findPlaces(searchIndex, startLat, endLat, boxes, map, type);
+        }
+      } else if (endLat > startLat) {
+          if (searchIndex < boxes.length) {
+            findPlaces(searchIndex, startLat, endLat, boxes, map, type);
+          }
+        }
+    }
+
+    else { // delay 1 second and try again
+      setTimeout("findPlaces(" + searchIndex + ")", 1000);
+    }
+  });
+}
+
 //create markers on each returned place result
 function createMarker(place, map, service, type) {
   var placeLoc = place.geometry.location;
-  var gsize = new google.maps.Size(7, 7)
-
-  var image;
+  var url;
 
   if (type == 'park') {
-    image = {
-      url: "https://storage.googleapis.com/support-kms-prod/SNP_2752129_en_v0",
+      url = "https://storage.googleapis.com/support-kms-prod/SNP_2752129_en_v0";
       //url: "https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle_blue.png",
-      size: gsize,
-      anchor: new google.maps.Point(3.5, 3.5)
-    };
-  } else {
-    image = {
-    url: "https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle.png",
-    size: gsize,
-    anchor: new google.maps.Point(3.5, 3.5)
-    };
+    } else {
+    url = "https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle.png";
   }
 
+  var image = {
+    url: url,
+    size: new google.maps.Size(7, 7),
+    anchor: new google.maps.Point(3.5, 3.5)
+    };
 
   var marker = new google.maps.Marker({
     map: map,
@@ -135,7 +180,6 @@ function createMarker(place, map, service, type) {
     position: place.geometry.location
   });
 
-  // var infowindow = new google.maps.InfoWindow();
 
   google.maps.event.addListener(marker, 'click', function() {
     service.getDetails(place, function(placesResult, status) {
@@ -144,31 +188,25 @@ function createMarker(place, map, service, type) {
         return;
       }
 
-
-    // get yelp data
-    var params = {
-      'term': placesResult.name,
-      'type': type
-    };
-
-    $.get("/yelp-search", params, function(yelpResult) {
-
-       var markerData = {
-        placesResult: placesResult,
-        yelpResult: yelpResult,
-        map: map,
-        type: type,
-        marker: marker
+      // get yelp data
+      var params = {
+        'term': placesResult.name,
+        'type': type
       };
+
+      $.get("/yelp-search", params, function(yelpResult) {
+
+        var markerData = {
+          placesResult: placesResult,
+          yelpResult: yelpResult,
+          map: map,
+          type: type,
+          marker: marker
+        };
 
        createMarkerInfoWindow(markerData);
 
-    });
-
-    // console.log(yelp_rating_graphic);
-    // console.log(yelp_link);
-
-
+      });
     });
   });
 }
@@ -194,54 +232,7 @@ function addTrip(evt) {
 $("#save-trip").on('submit', addTrip);
 
 
-// var yelp_rating_graphic;
-// var yelp_link;
 
-function findPlaces(searchIndex, startLat, endLat, boxes, map, type) {
-  // debugger;
-
-  // search request is defined as the area bound by each routeBox box,
-  // search type is hard coded as restaurant for testing
-  var restaurantRequest = {
-    bounds: boxes[searchIndex],
-    type: type
-  };
-
-  var service = new google.maps.places.PlacesService(map);
-
-
-  service.nearbySearch(restaurantRequest, function(results, status) {
-    if (status == google.maps.places.PlacesServiceStatus.OK) {
-      for (var i = 0, result; result = results[i]; i++) {
-        if (result.rating >= 4.0){
-          // submitYelpRequest(result, type);
-          var marker = createMarker(result, map, service, type);
-
-        }
-        // submitYelpRequest(result, type);
-      }
-
-    }
-
-    //as long as we haven't triggered the query limit, add 1 to the index and search again
-    if (status != google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
-      searchIndex++;
-      if (startLat > endLat) {
-        if (searchIndex < (boxes.length - 3)) {
-          findPlaces(searchIndex, startLat, endLat, boxes, map, type);
-        }
-      } else if (endLat > startLat) {
-          if (searchIndex < boxes.length) {
-            findPlaces(searchIndex, startLat, endLat, boxes, map, type);
-          }
-        }
-    }
-
-    else { // delay 1 second and try again
-      setTimeout("findPlaces(" + searchIndex + ")", 1000);
-    }
-  });
-}
 
 function createMarkerInfoWindow(markerData) {
   var yelp_rating_graphic = markerData.yelpResult[1];
@@ -249,12 +240,12 @@ function createMarkerInfoWindow(markerData) {
   var name = markerData.placesResult.name;
 
 
-      var contentString =
-            '</div>' +
-            '<h3>' + name + '</h3>'+
-            '<p><img src=' + yelp_rating_graphic + '></p>'+
-            '<p><a target="blank" href='+ yelp_link + '>Link to Yelp: </a></p>';
-    console.log(contentString);
+  var contentString =
+      '</div>' +
+      '<h3>' + name + '</h3>'+
+      '<p><img src=' + yelp_rating_graphic + '></p>'+
+      '<p><a target="blank" href='+ yelp_link + '>Link to Yelp: </a></p>';
+    // console.log(contentString);
 
     var infowindow = new google.maps.InfoWindow({content: contentString});
     infowindow.open(markerData.map, markerData.marker);
@@ -262,77 +253,8 @@ function createMarkerInfoWindow(markerData) {
 }
 
 
-//-------------------------------------------------------------------------
-//Search updated to Nearby and boxes closest to origin not included in search
-//--------------------------------------------------------------------------
-
-function initialize() {
-  // intial map hard coded to center at Oakland
-  var oakland = {lat: 37.8044, lng: -122.2711};
-
-  var mapOptions = {
-    center: oakland,
-    zoom: 8
-  };
-
-  var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-  var service = new google.maps.places.PlacesService(map);
-
-  drawPath(start, end, map);
 
 
-
-
-
-
-
-
-
-//   function createParkMarker(place) {
-//     var placeLoc = place.geometry.location;
-
-//     var image = {
-//       url: "https://storage.googleapis.com/support-kms-prod/SNP_2752129_en_v0",
-//       //url: "https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle_blue.png",
-//       size: new google.maps.Size(7, 7),
-//       anchor: new google.maps.Point(3.5, 3.5)
-//     };
-
-//     var marker = new google.maps.Marker({
-//       map: map,
-//       icon: image,
-//       position: place.geometry.location
-//     });
-
-
-//     google.maps.event.addListener(marker, 'click', function() {
-//       service.getDetails(place, function(result, status) {
-//         if (status !== google.maps.places.PlacesServiceStatus.OK) {
-//           console.error(status);
-//           return;
-//         }
-
-
-
-//           var contentString =
-//             '</div>' +
-//             '<h3>' + result.name + '</h3>'+
-//             '<p><img src=' + yelp_rating_graphic + '></p>'+
-//             '<p><a target="blank" href='+ yelp_link + '>Link to Yelp: </a></p>';
-
-
-
-
-//       var infowindow = new google.maps.InfoWindow({content: contentString});
-
-//       // infowindow.setContent(result.name);
-//       infowindow.open(map, marker);
-//       });
-//     });
-
-//   }
-
-}
 initialize();
 
 });
