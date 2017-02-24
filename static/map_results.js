@@ -188,25 +188,30 @@ function createMarker(place, map, service, type) {
         return;
       }
 
-      // get yelp data
-      var params = {
-        'term': placesResult.name,
-        'type': type
-      };
+      var infowindow = new google.maps.InfoWindow();
 
-      $.get("/yelp-search", params, function(yelpResult) {
+      infowindow.setContent(placesResult.name);
+      infowindow.open(map, marker);
 
-        var markerData = {
-          placesResult: placesResult,
-          yelpResult: yelpResult,
-          map: map,
-          type: type,
-          marker: marker
-        };
+      // // get yelp data
+      // var params = {
+      //   'term': placesResult.name,
+      //   'type': type
+      // };
 
-       createMarkerInfoWindow(markerData);
+      // $.get("/yelp-search", params, function(yelpResult) {
 
-      });
+      //   var markerData = {
+      //     placesResult: placesResult,
+      //     yelpResult: yelpResult,
+      //     map: map,
+      //     type: type,
+      //     marker: marker
+      //   };
+
+      //  createMarkerInfoWindow(markerData);
+
+      // });
     });
   });
 }
@@ -233,24 +238,24 @@ $("#save-trip").on('submit', addTrip);
 
 
 
+// //Adds infoWindow with Yelp search results
+// function createMarkerInfoWindow(markerData) {
+//   var yelp_rating_graphic = markerData.yelpResult[1];
+//   var yelp_link = markerData.yelpResult[0];
+//   var name = markerData.placesResult.name;
 
-function createMarkerInfoWindow(markerData) {
-  var yelp_rating_graphic = markerData.yelpResult[1];
-  var yelp_link = markerData.yelpResult[0];
-  var name = markerData.placesResult.name;
 
+//   var contentString =
+//       '</div>' +
+//       '<h3>' + name + '</h3>'+
+//       '<p><img src=' + yelp_rating_graphic + '></p>'+
+//       '<p><a target="blank" href='+ yelp_link + '>Link to Yelp: </a></p>';
+//     // console.log(contentString);
 
-  var contentString =
-      '</div>' +
-      '<h3>' + name + '</h3>'+
-      '<p><img src=' + yelp_rating_graphic + '></p>'+
-      '<p><a target="blank" href='+ yelp_link + '>Link to Yelp: </a></p>';
-    // console.log(contentString);
-
-    var infowindow = new google.maps.InfoWindow({content: contentString});
-    infowindow.open(markerData.map, markerData.marker);
-    // console.log(yelp_rating_graphic, yelp_link);
-}
+//     var infowindow = new google.maps.InfoWindow({content: contentString});
+//     infowindow.open(markerData.map, markerData.marker);
+//     // console.log(yelp_rating_graphic, yelp_link);
+// }
 
 
 
