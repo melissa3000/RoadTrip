@@ -14,7 +14,7 @@ d3.json("/static/json/convertedstates.json", function(error, states) {
   if (error) {
     return console.error(error);
   } else {
-    console.log(states);
+    // console.log(states);
   }
 
 
@@ -53,8 +53,38 @@ d3.json("/static/json/convertedstates.json", function(error, states) {
     .style('stroke-weight', 1);
 
 
+  // Adding origin cities on the map, Lat/Long are reversed in D3 projections
+  var originCities = [[40.7127, -74.0059], [37.7833, -122.4167]];
 
-    // });
+
+  // Styling map points on the canvas
+  svg.selectAll('circle')
+    .data(originCities)
+    .enter()
+    .append('circle')
+    .attr('r', 10)
+    .attr('id', 'originCircle')
+    .attr('fill', 'steelblue')
+    .attr('fill-opacity', 0.8)
+    .attr('transform', function(originCities) {
+      return 'translate(' + projection([originCities[1], originCities[0]]) + ')';
+    });
+
+  // Adding destination cities on the map, Lat/Long are reversed in D3 projections
+  var destinationCities = [[47.6062, -122.3321], [33.7490, -84.3880]];
+
+  // Styling map points on the canvas
+  svg.selectAll('destinationCircle')
+    .data(destinationCities)
+    .enter()
+    .append('circle')
+    .attr('r', 6)
+    .attr('id', 'destinationCircle')
+    .attr('fill', 'red')
+    .attr('fill-opacity', 0.8)
+    .attr('transform', function(destinationCities) {
+      return 'translate(' + projection([destinationCities[1], destinationCities[0]]) + ')';
+    });
 
 });
 
