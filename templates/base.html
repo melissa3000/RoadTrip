@@ -2,11 +2,14 @@
 <html>
 <head>
   <title>{% block title %}TITLE GOES HERE{% endblock %}</title>
-  <!-- <link rel="stylesheet" href="/static/styles.css"> 
-  ******This stylesheet still needs to be written***** --> 
+  <!-- <link rel="stylesheet" href="/static/styles.css">
+  ******This stylesheet still needs to be written***** -->
 
   <!-- <script src="http://code.jquery.com/jquery.js"></script>
   ***** Uncomment to use jquery  ***** -->
+
+  <link rel="stylesheet" href="static/normalize.css">
+  <link rel="stylesheet" href="static/skeleton.css">
 
 </head>
 <body>
@@ -23,7 +26,7 @@
   {% endwith %}
 
   {% block content %}BODY CONTENT GOES HERE{% endblock %}
-  
+
  <!--  <footer>Do I want a footer?</footer> -->
 </body>
 </html>

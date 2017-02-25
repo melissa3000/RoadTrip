@@ -151,7 +151,8 @@ function findPlaces(searchIndex, startLat, endLat, boxes, map, type) {
     }
 
     else { // delay 1 second and try again
-      setTimeout("findPlaces(" + searchIndex + ")", 1000);
+      var tryAgain = setTimeout(function() { findPlaces(searchIndex, startLat, endLat, boxes, map, type); }, 1000);
+      // setTimeout("findPlaces(" + searchIndex + ")", 1000);
     }
   });
 }
