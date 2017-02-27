@@ -54,7 +54,9 @@ d3.json("/static/json/convertedstates.json", function(error, states) {
 
 
   // Adding origin cities on the map, Lat/Long are reversed in D3 projections
-  var originCities = [[40.7127, -74.0059], [37.7833, -122.4167]];
+  var originCities = [[37.7833, -122.4167],
+                      // [40.7127, -74.0059],
+                      ];
 
 
   // Styling map points on the canvas
@@ -71,7 +73,13 @@ d3.json("/static/json/convertedstates.json", function(error, states) {
     });
 
   // Adding destination cities on the map, Lat/Long are reversed in D3 projections
-  var destinationCities = [[47.6062, -122.3321], [33.7490, -84.3880]];
+  var destinationCities = [[39.3077, -123.7995, "Mendocino", "3.25 hours"],
+                          [36.5552, -121.9233, "Carmel-by-the-sea", "2 hours and 5 minutes"],
+                          [38.5025, -122.2654, "Napa Valley", "1.5 hours"],
+                          [39.0968, -120.0324, "Lake Tahoe", "3.75 hours"],
+                          [34.4208, -119.6982, "Santa Barbara", "5 hours"],
+                          [37.8651, -119.5383, "Yosemite National Park", "4 hours"],
+                          [36.9741, -122.0308, "Santa Cruz", "1.5 hours"]];
 
   // Styling map points on the canvas
   svg.selectAll('destinationCircle')
@@ -85,6 +93,9 @@ d3.json("/static/json/convertedstates.json", function(error, states) {
     .attr('transform', function(destinationCities) {
       return 'translate(' + projection([destinationCities[1], destinationCities[0]]) + ')';
     });
+
+
+
 
 });
 

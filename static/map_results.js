@@ -14,6 +14,7 @@ function initialize() {
   var map = new google.maps.Map(document.getElementById("map"), mapOptions);
   var service = new google.maps.places.PlacesService(map);
 
+//s and e - where do they come from?
   drawPath(start, end, map);
 }
 
@@ -46,6 +47,8 @@ function drawPath(start, end, map) {
     if (status == google.maps.DirectionsStatus.OK) {
       directionsRenderer.setDirections(result);
 
+
+        //FIX THIS___________________________
         //required to adjust box iteration later (independent of direction of travel)
         endLat = result.routes[0].legs[0].end_location.lng();
         startLat = result.routes[0].legs[0].start_location.lng();
@@ -77,7 +80,7 @@ function drawPath(start, end, map) {
 
         //turn on drawBoxes for testing if you want to visualize search boundaries,
         //function is commented out below
-        drawBoxes(boxes, map);
+        // drawBoxes(boxes, map);
 
         //since direction request was successful,
         //call findPlaces function with searchIndex zero
@@ -189,30 +192,32 @@ function createMarker(place, map, service, type) {
         return;
       }
 
-      var infowindow = new google.maps.InfoWindow();
+      // var infowindow = new google.maps.InfoWindow();
 
-      infowindow.setContent(placesResult.name);
-      infowindow.open(map, marker);
+      // infowindow.setContent(placesResult.name);
+      // infowindow.open(map, marker);
 
       // // get yelp data
-      // var params = {
-      //   'term': placesResult.name,
-      //   'type': type
-      // };
+      var params = {
+        'term': placesResult.name,
+        'type': type
+      };
 
-      // $.get("/yelp-search", params, function(yelpResult) {
+      $.get("/yelp-search", params, function(yelpResult) {
 
-      //   var markerData = {
-      //     placesResult: placesResult,
-      //     yelpResult: yelpResult,
-      //     map: map,
-      //     type: type,
-      //     marker: marker
-      //   };
+        var markerData = {
+          placesResult: placesResult,
+          yelpResult: yelpResult,
+          map: map,
+          type: type,
+          marker: marker
+        };
 
-      //  createMarkerInfoWindow(markerData);
+       createMarkerInfoWindow(markerData);
 
-      // });
+      });
+
+
     });
   });
 }
@@ -240,23 +245,23 @@ $("#save-trip").on('submit', addTrip);
 
 
 // //Adds infoWindow with Yelp search results
-// function createMarkerInfoWindow(markerData) {
-//   var yelp_rating_graphic = markerData.yelpResult[1];
-//   var yelp_link = markerData.yelpResult[0];
-//   var name = markerData.placesResult.name;
+function createMarkerInfoWindow(markerData) {
+  var yelp_rating_graphic = markerData.yelpResult[1];
+  var yelp_link = markerData.yelpResult[0];
+  var name = markerData.placesResult.name;
 
 
-//   var contentString =
-//       '</div>' +
-//       '<h3>' + name + '</h3>'+
-//       '<p><img src=' + yelp_rating_graphic + '></p>'+
-//       '<p><a target="blank" href='+ yelp_link + '>Link to Yelp: </a></p>';
-//     // console.log(contentString);
+  var contentString =
+      '</div>' +
+      '<h3>' + name + '</h3>'+
+      '<p><img src=' + yelp_rating_graphic + '></p>'+
+      '<p><a target="blank" href='+ yelp_link + '>Link to Yelp: </a></p>';
+    // console.log(contentString);
 
-//     var infowindow = new google.maps.InfoWindow({content: contentString});
-//     infowindow.open(markerData.map, markerData.marker);
-//     // console.log(yelp_rating_graphic, yelp_link);
-// }
+    var infowindow = new google.maps.InfoWindow({content: contentString});
+    infowindow.open(markerData.map, markerData.marker);
+    // console.log(yelp_rating_graphic, yelp_link);
+}
 
 
 
