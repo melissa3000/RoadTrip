@@ -72,6 +72,8 @@ d3.json("/static/json/convertedstates.json", function(error, states) {
       return 'translate(' + projection([originCities[1], originCities[0]]) + ')';
     });
 
+
+
   // Adding destination cities on the map, Lat/Long are reversed in D3 projections
   var destinationCities = [[39.3077, -123.7995, "Mendocino", "3.25 hours"],
                           [36.5552, -121.9233, "Carmel-by-the-sea", "2 hours and 5 minutes"],
@@ -81,6 +83,13 @@ d3.json("/static/json/convertedstates.json", function(error, states) {
                           [37.8651, -119.5383, "Yosemite National Park", "4 hours"],
                           [36.9741, -122.0308, "Santa Cruz", "1.5 hours"]];
 
+  var tooltip = d3.select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("z-index", "10")
+    .style("visibility", "hidden");
+
+
   // Styling map points on the canvas
   svg.selectAll('destinationCircle')
     .data(destinationCities)
@@ -89,7 +98,13 @@ d3.json("/static/json/convertedstates.json", function(error, states) {
     .attr('r', 6)
     .attr('id', 'destinationCircle')
     .attr('fill', 'red')
+    .on("mouseover", function(d){ tooltip.text(d[2] + ", Drive time: " + d[3]).style("visibility", "visible");})
+    .on("mousemove", function(){return tooltip.style("top",
+    (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");})
+    .on("mouseout", function(){return tooltip.style("visibility", "hidden");})
+
     .attr('fill-opacity', 0.8)
+    // .text("div")
     .attr('transform', function(destinationCities) {
       return 'translate(' + projection([destinationCities[1], destinationCities[0]]) + ')';
     });
