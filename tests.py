@@ -4,6 +4,8 @@ from server import app
 from flask import session
 import server
 import os
+from selenium import webdriver
+
 
 class FlaskTests(TestCase):
     """Flask tests"""
@@ -77,6 +79,12 @@ class FlaskTestsLoggedIn(TestCase):
             with c.session_transaction() as sess:
                 sess['user_id'] = 1
 
+    def tearDown(self):
+        """Do at end of test"""
+
+        db.session.close()
+
+
     def test_new_search(self):
         """tests route that displays search map results"""
 
@@ -87,12 +95,38 @@ class FlaskTestsLoggedIn(TestCase):
         result = self.client.post('/map',
                                 data={'start': 'Oakland', 'end': 'Petaluma',
                                 'key': os.environ['PLACES_SECRET_KEY']})
-        print result
+        # print result
         self.assertEqual(result.status_code, 200)
         self.assertIn('Trip Name', result.data)
 
+# ---------------- Selenium tests ---------------------------------------
 
+# class TestLogIn(TestCase):
 
+#     def setUp(self):
+#         self.browser = webdriver.Firefox()
+
+#     def tearDown(self):
+#         self.browser.quit()
+
+#     def test_title(self):
+#         self.browser.get('http://localhost:5000/')
+#         self.assertEqual(self.browser.title, 'Log in')
+
+#     def testLogInSelenium(self):
+#         self.browser.get('http://localhost:5000/')
+
+#         user = self.browser.find_element_by_id('user_name')
+#         user.send_keys('test_user')
+#         password = self.browser.find_element_by_id('password')
+#         password.send_keys("abc123")
+
+#         btn = self.browser.find_element_by_id('submit-btn')
+#         btn.click()
+
+#         self.assertEqual(self.browser.title, 'Search')
+
+# -------------------------------------------------------------------------
 
 # class MockFlaskTests(TestCase):
     # """Mocking to test functions that involve an API call"""

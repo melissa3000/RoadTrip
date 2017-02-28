@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if trips %}
+  <table>
+    <tr>
+      <th>Trip Name</th>
+      <th>Starting Location</th>
+      <th>Ending Location</th>
+    </tr>
+    {% for trip in trips %}
+      <tr>
+        <td>{{ trip[0] }}</td>
+        <td>{{ trip[1] }}</td>
+        <td>{{ trip[2] }}</td>
+        <td>{{ trip[3] }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endif %}
+
+{% endblock %}

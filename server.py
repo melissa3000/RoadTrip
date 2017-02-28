@@ -111,6 +111,17 @@ def saved_trips():
 
     return "succeess"
 
+@app.route('/my-trips')
+def userTrips():
+    """Displays saved trip for registered users"""
+
+    sql = "SELECT user_id, start, end, trip_name FROM trips"
+
+    cursor = db.session.execute(sql)
+    trips = cursor.fetchall()
+
+
+    return render_template("my_trips.html", trips=trips)
 
 
 @app.route("/yelp-search")
@@ -135,7 +146,6 @@ def yelpRestaurantSearch():
     yelp_name = resp.businesses[0].name
 
     return jsonify([yelp_link, rating_graphic, yelp_name])
-    # return resp.businesses[0].name # cannot jsonify because it returns an object
 
 
 
@@ -144,6 +154,9 @@ def displayD3Map():
     """Displays interactive D3 map"""
 
     return render_template("d3map.html")
+
+
+
 
 
 
