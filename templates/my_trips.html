@@ -11,10 +11,10 @@
     </tr>
     {% for trip in trips %}
       <tr>
-        <td>{{ trip[0] }}</td>
-        <td>{{ trip[1] }}</td>
-        <td>{{ trip[2] }}</td>
-        <td>{{ trip[3] }}</td>
+        <td>{{ trip.trip_name }}</td>
+        <td>{{ trip.start }}</td>
+        <td>{{ trip.end }}</td>
+
       </tr>
     {% endfor %}
   </table>

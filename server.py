@@ -115,10 +115,8 @@ def saved_trips():
 def userTrips():
     """Displays saved trip for registered users"""
 
-    sql = "SELECT user_id, start, end, trip_name FROM trips"
 
-    cursor = db.session.execute(sql)
-    trips = cursor.fetchall()
+    trips = Trip.query.order_by('trip_name').all()
 
 
     return render_template("my_trips.html", trips=trips)
