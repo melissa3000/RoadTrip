@@ -18,7 +18,7 @@
         padding: 0;
       }
       #map {
-        height: 100%;
+        height: 80%;
       }
 
 
@@ -59,7 +59,8 @@
     </script>
     <script src="/static/map_results.js"></script>
 
-    <p>Want to save this trip? Give it a name and click "Save"</p>
+    <a href="/d3map">Live in the Bay Area and want to see a visual reference with suggestions?</a>
+    <h5>To save this trip for later, give it a name and click "Save"</h5>
     <form id="save-trip" action="/saved" method="POST">
       <label for="trip_name"> Trip Name:</label>
       <input id="trip_name" type="text" name="trip_name">
@@ -70,6 +71,7 @@
 
       <input type="submit" value="Save">
     </form>
+      <div>Your trip has been saved for later</div>
 
   </body>
 

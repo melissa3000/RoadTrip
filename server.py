@@ -108,11 +108,6 @@ def saved_trips():
     db.session.add(new_trip)
     db.session.commit()
 
-    # flash("Your trip has been saved for later")
-    #code 307 preserves the original form method through the redirect
-    # return redirect("/map", 307)
-
-    flash("Your trip has been saved for later")
 
     return "succeess"
 
@@ -132,26 +127,6 @@ def yelpRestaurantSearch():
     resp = yelping.client.search('San Francisco', **params)
 
 
-    # request.form = {
-    #     'sw_lat': 123.45,
-    #     'sw_long': 235.67
-    # }
-
-    # hard code for now
-    # params = {
-    #     'term': 'food'
-    # }
-
-    # resp = yelping.client.search_by_bounding_box(
-    #     request.form["sw_lat"],
-    #     request.form["sw_long"],
-    #     request.form["ne_lat"],
-    #     request.form["ne_long"],
-    #     **params
-    # )
-    print "I got to the yelp search"
-    print "search results", resp
-
     # import pdb
     # pdb.set_trace()
 
@@ -159,20 +134,10 @@ def yelpRestaurantSearch():
     rating_graphic = resp.businesses[0].rating_img_url
     yelp_name = resp.businesses[0].name
 
-    #must remove quotation marks from result to get a valid url:
-
-
     return jsonify([yelp_link, rating_graphic, yelp_name])
     # return resp.businesses[0].name # cannot jsonify because it returns an object
 
 
-
-
-# @app.route('/map')
-# def Places_API_request():
-#     """Makes API request from Google Places API"""
-
-#     return render_template("map.html", key=os.environ['PLACES_SECRET_KEY'])
 
 @app.route('/d3map')
 def displayD3Map():
