@@ -1,7 +1,5 @@
 from selenium import webdriver
 
-# def testLogin():
-
 
 def testSearch():
     browser = webdriver.Firefox()

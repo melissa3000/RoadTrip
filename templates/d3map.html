@@ -83,6 +83,8 @@ d3.json("/static/json/convertedstates.json", function(error, states) {
                           [37.8651, -119.5383, "Yosemite National Park", "4 hours"],
                           [36.9741, -122.0308, "Santa Cruz", "1.5 hours"]];
 
+  // create tooltip variable that allows to hover over circles and display names
+  // and drive times
   var tooltip = d3.select("body")
     .append("div")
     .style("position", "absolute")
@@ -98,20 +100,19 @@ d3.json("/static/json/convertedstates.json", function(error, states) {
     .attr('r', 6)
     .attr('id', 'destinationCircle')
     .attr('fill', 'red')
+    .attr('fill-opacity', 0.8)
+
+    // mouseover functionality to display destination name and drive time
     .on("mouseover", function(d){ tooltip.text(d[2] + ", Drive time: " + d[3]).style("visibility", "visible");})
     .on("mousemove", function(){return tooltip.style("top",
     (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");})
     .on("mouseout", function(){return tooltip.style("visibility", "hidden");})
 
-    .attr('fill-opacity', 0.8)
-    // .text("div")
+    // transforms lat/long into projection coordinates so they appear in the correct
+    // place on the map
     .attr('transform', function(destinationCities) {
       return 'translate(' + projection([destinationCities[1], destinationCities[0]]) + ')';
     });
-
-
-
-
 });
 
 </script>
