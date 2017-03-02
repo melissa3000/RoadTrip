@@ -209,6 +209,11 @@ function createMarker(place, map, service, type) {
         'type': type
       };
 
+
+      var city = placesResult.address_components[2].long_name;
+      // console.log(placesResult.address_components[2].long_name);
+
+
       $.get("/yelp-search", params, function(yelpResult) {
 
         var markerData = {
@@ -218,6 +223,7 @@ function createMarker(place, map, service, type) {
           type: type,
           marker: marker
         };
+
 
        createMarkerInfoWindow(markerData);
 
