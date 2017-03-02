@@ -202,15 +202,15 @@ function createMarker(place, map, service, type) {
       // infowindow.setContent(placesResult.name);
       // infowindow.open(map, marker);
 
+      var city = placesResult.address_components[2].long_name;
 
       // get yelp data
       var params = {
         'term': placesResult.name,
-        'type': type
+        'type': type,
+        'city': city
       };
 
-
-      var city = placesResult.address_components[2].long_name;
       // console.log(placesResult.address_components[2].long_name);
 
 

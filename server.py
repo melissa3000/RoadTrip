@@ -129,11 +129,14 @@ def yelpRestaurantSearch():
     term = request.args.get("term")
     search_type = request.args.get("type")
 
+    city = request.args.get("city")
+    # print "city: ", city
+
     params = {"term": term, "type": search_type}
 
-    print "Params", params
+    # print "Params", params
 
-    resp = yelping.client.search('San Francisco', **params)
+    resp = yelping.client.search(city, **params)
 
 
     # import pdb
