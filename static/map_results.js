@@ -252,13 +252,13 @@ function createMarkerInfoWindow(markerData) {
 //------------Save Trips to DB-------------------------------------
 
 function tripAdded(result) {
-  // var successMessage = document.getElementById('success_message');
+  var successMessage = document.getElementById('success_message');
   // if (successMessage.style.display === 'none') {
   //   successMessage.style.display = 'block';
   //   } else {
   //     successMessage.style.display = 'none';
   // }
-  document.getElementById('success_message').style.display = 'block';
+  success_message.style.display = 'block';
   console.log('successfuly saved');
 }
 

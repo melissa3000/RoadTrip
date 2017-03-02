@@ -49,19 +49,21 @@
     </script>
     <script src="/static/map_results.js"></script>
 
-    <a href="/d3map">Live in the Bay Area and want to see a visual reference with suggestions?</a>
     <h5>To save this trip for later, give it a name and click "Save"</h5>
     <form id="save-trip" action="/saved" method="POST">
+      <div class="col-xs-3">
       <label for="trip_name"> Trip Name:</label>
-      <input id="trip_name" type="text" name="trip_name">
+      <input id="trip_name" class="form-control" type="text" name="trip_name">
 
       <input id="start" type="hidden" name="start" value="{{ start }}">
       <input id="end" type="hidden" name="end" value="{{ end }}">
 
 
-      <input type="submit" value="Save">
+      <input type="submit" class="btn btn-default" value="Save">
     </form>
-      <div id='success_message' style='display:none'>Your trip has been saved for later</div>
+
+      <div id='success_message' style='display:none'>Your trip has been saved for later!</div>
+      <a href="/my-trips">Your saved trips</a>
 
   </body>
 

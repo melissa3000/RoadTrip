@@ -3,9 +3,13 @@
 <head>
   <title>{% block title %}TITLE GOES HERE{% endblock %}</title>
 
-  <link rel="stylesheet" href="static/normalize.css">
-  <link rel="stylesheet" href="static/skeleton.css">
+<!--   <link rel="stylesheet" href="static/normalize.css">
+  <link rel="stylesheet" href="static/skeleton.css"> -->
 
+
+
+<link rel="stylesheet"
+        href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.css">
 </head>
 <body>
   <h1>Road Trip Planner</h1>
@@ -19,6 +23,8 @@
     </ul>
    {% endif %}
   {% endwith %}
+
+
 
   {% block content %}BODY CONTENT GOES HERE{% endblock %}
 

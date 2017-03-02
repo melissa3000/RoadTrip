@@ -18,13 +18,12 @@ params = {
     'type': 'park'
 }
 
-resp = client.search('San Francisco', **params)
+# resp = client.search('San Francisco', **params)
 
+#I'll need to use park = resp.business[0] gets the park object,
+# park.rating_img_url gives a link to the graphic of the star rating,
+# park.url gives the link to the actual park yelp page
 
-
-
-
-# -----------Practice / hard coded tests below ----------------------------
 
 #hard coded bounding box for testing
 # resp = client.search_by_bounding_box(

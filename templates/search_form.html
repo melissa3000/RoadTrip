@@ -5,24 +5,29 @@
 {% block content %}
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<link rel="stylesheet"
+        href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.css">
+
+<div class="container">
+  <div class="page-header">
 
   <h2>Search for your next road trip</h2>
 <div>
-  <form action="/map" method="POST">
+  <form class="form-group" action="/map" method="POST">
+    <div class="col-xs-3">
     <label for="start">Starting Location:</label>
-    <input id="start" type="text" name="start"><br>
+    <input id="start" class="form-control" type="text" name="start"><br>
 
     <label for="end">Ending Location:</label>
-    <input id="end" type="text" name="end"><br>
+    <input id="end" class="form-control" type="text" name="end"><br>
 
-    <input id="search-btn" type="submit" name="submit" value="submit">
-
+    <input id="search-btn" class="btn btn-default" type="submit" name="submit" value="submit">
   </form>
 </div>
 
 <div>
-    <a href="/my-trips">Click here to go straight to your saved trips</a>
+    <a href="/d3map">Live in the Bay Area and want suggestions?</a>
 </div>
-
+  <img src="https://www.meetmindful.com/wp-content/uploads/2016/01/joyride-happy-couple-adventure-roadtrip-wanderlust-open-road-convertable-car-highway-love-adventure.jpg" class="img-responsive" alt="Responsive image">
 
 {% endblock %}

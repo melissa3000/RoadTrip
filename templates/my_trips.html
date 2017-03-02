@@ -3,14 +3,23 @@
 {% block title %}My Trips{% endblock %}
 
 {% block content %}
+  <link rel="stylesheet"
+        href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.css">
+
+<body>
+
+<div class="container">
+
 
 {% if trips %}
-  <table>
+  <table class="table table-hover table-striped">
+    <thead>
     <tr>
       <th>Trip Name</th>
       <th>Starting Location</th>
       <th>Ending Location</th>
     </tr>
+    </thead>
     {% for trip in trips %}
       <tr>
         <td>{{ trip.trip_name }}</td>
@@ -22,4 +31,8 @@
   </table>
 {% endif %}
 
+</div>
+
+</body>
 {% endblock %}
+
