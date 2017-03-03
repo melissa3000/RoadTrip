@@ -5,7 +5,7 @@
 {% block content %}
   <link rel="stylesheet"
         href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.css">
-
+<script src="http://code.jquery.com/jquery.js"></script>
 <body>
 
 <div class="container">
@@ -20,9 +20,14 @@
       <th>Ending Location</th>
     </tr>
     </thead>
+<!--     Create table with clickable rows that sends a post request to the /map route -->
     {% for trip in trips %}
-      <tr>
-        <td>{{ trip.trip_name }}</td>
+      <tr class="form-row" data-form-id="#trip-{{ trip.trip_id }}">
+        <td><form id="trip-{{ trip.trip_id }}" action="/map" method="POST">
+              <input type="hidden" name="start" value="{{ trip.start }}">
+              <input type="hidden" name="end" value="{{ trip.end }}">
+            </form>
+            {{ trip.trip_name }}</td>
         <td>{{ trip.start }}</td>
         <td>{{ trip.end }}</td>
 
@@ -30,6 +35,16 @@
     {% endfor %}
   </table>
 {% endif %}
+
+<script>
+
+  $(".form-row").on("click", function() {
+    var formId = $(this).data('form-id');
+    console.log(formId);
+    $(formId).submit();
+  });
+
+</script>
 
 </div>
 
