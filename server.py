@@ -165,7 +165,7 @@ if __name__ == "__main__":
     # Code below only runs if server file is opened directly
 
     #Turn this off after debugging
-    app.debug = True
+    # app.debug = True
     connect_to_db(app)
     DebugToolbarExtension(app)
 

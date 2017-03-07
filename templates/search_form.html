@@ -4,30 +4,61 @@
 
 {% block content %}
 
+<style>
+.container {
+  position: relative;
+}
+
+.topleft {
+  position: absolute;
+  top: 75px;
+  left: 100px;
+  /*font-size: 18px*/
+}
+
+img {
+  width: 100%;
+  height: auto;
+  opacity: 0.4;
+}
+</style>
+
 <script src="https://d3js.org/d3.v4.min.js"></script>
-<link rel="stylesheet"
-        href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.css">
+<!-- <link rel="stylesheet"
+        href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.css"> -->
 
-<div class="container">
-  <div class="page-header">
+  <div class="container-fluid">
+<!--       <img src="/static/Couple-driving.jpg" class="img-responsive" alt="Responsive image"> -->
+      <img src="/static/sunset.jpg" class="img-responsive" alt="Responsive image">
+  </div>
+<!-- <div class="row">
+  <div class="col-xs-4"> -->
 
-  <h2>Search for your next road trip</h2>
-<div>
-  <form class="form-group" action="/map" method="POST">
-    <div class="col-xs-3">
-    <label for="start">Starting Location:</label>
-    <input id="start" class="form-control" type="text" name="start"><br>
+    <!-- <div class="container"> -->
+      <div class="topleft">
+        <div class="row">
 
-    <label for="end">Ending Location:</label>
-    <input id="end" class="form-control" type="text" name="end"><br>
+        <h2>Search for your next road trip</h2>
+        <div>
+          <form class="form-group" action="/map" method="POST">
+            <div class="col-xs-8">
+              <label for="start">Starting Location:</label>
+              <input id="start" class="form-control" type="text" name="start" placeholder="san francisco"><br>
 
-    <input id="search-btn" class="btn btn-default" type="submit" name="submit" value="submit">
-  </form>
+              <label for="end">Ending Location:</label>
+              <input id="end" class="form-control" type="text" name="end" placeholder="napa"><br>
+
+              <input id="search-btn" class="btn btn-default" type="submit" name="submit" value="submit"><br>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    <div>
+      <a href="/d3map">Live in the Bay Area and want suggestions?</a>
+    </div>
+
+
 </div>
-
-<div>
-    <a href="/d3map">Live in the Bay Area and want suggestions?</a>
-</div>
-  <img src="https://www.meetmindful.com/wp-content/uploads/2016/01/joyride-happy-couple-adventure-roadtrip-wanderlust-open-road-convertable-car-highway-love-adventure.jpg" class="img-responsive" alt="Responsive image">
 
 {% endblock %}

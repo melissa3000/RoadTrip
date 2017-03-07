@@ -1,0 +1,6 @@
+/env
+secrets*
+*pyc
+config_secret.json
+*DS_Store
+/yelp-env

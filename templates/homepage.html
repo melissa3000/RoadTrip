@@ -5,31 +5,39 @@
 
 {% block content %}
 
-<link rel="stylesheet"
-        href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.css">
+  <div class="wrapper">
+  <div class="container-fluid">
 
-<div class="container">
+  <div class="row">
+    <div class="col-xs-9">
 
-  <img src="http://hdwallpaperfx.com/wp-content/uploads/2016/02/Beautiful-Road-Colorful-Trees-Autumn.jpg" class="img-responsive" alt="Responsive image">
-  <div class="page-header">
-    <h2>Log in to get started</h2>
+
+      <img src="/static/Windy-Road.jpg" class="img-responsive" alt="Responsive image">
+
+    </div>
+
+    <div class="page-header">
+
+      <div class="col-xs-3">
+        <h2>Log in:</h2>
+
+
+        <form class="form-group" action="/login" method="POST">
+
+          <label for="user_name">Name:</label>
+          <input id="user_name" class="form-control" type="text" name="name"><br>
+
+          <label for="password">Password:</label>
+          <input id="password" class="form-control" type="password" name="password"><br>
+
+          <input id="submit-btn" class="btn btn-default" type="submit" name="submit" value="submit">
+
+        </form><br>
+        <a href="/new-user">New User? Click to register</a>
+      </div>
+    </div>
   </div>
-
-  <form class="form-group" action="/login" method="POST">
-    <div class="col-xs-3">
-    <label for="user_name">Name:</label>
-    <input id="user_name" class="form-control" type="text" name="name"><br>
-
-    <label for="password">Password:</label>
-    <input id="password" class="form-control" type="password" name="password"><br>
-
-    <input id="submit-btn" class="btn btn-default" type="submit" name="submit" value="submit">
-
-  </form>
-
-  <br>
-<a href="/new-user">New User? Click to register</a>
-</div>
+  </div>
 
 {% endblock %}
 
