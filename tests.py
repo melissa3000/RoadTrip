@@ -25,7 +25,7 @@ class FlaskTests(TestCase):
         """test homepage"""
 
         result = self.client.get("/")
-        self.assertIn("Please log in", result.data)
+        self.assertIn("Log in", result.data)
 
     def test_registration_form(self):
         """test new user route"""
